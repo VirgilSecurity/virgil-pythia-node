@@ -1,0 +1,35 @@
+{
+  "name": "pythia-node",
+  "version": "0.0.0",
+  "description": "Virgil Pythia Service Client",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require babel-register \"src/tests/**/*.test.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VirgilSecurity/pythia-node.git"
+  },
+  "keywords": [
+    "pythia"
+  ],
+  "author": "Virgil Security Inc. <support@virgilsecurity.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/VirgilSecurity/pythia-node/issues"
+  },
+  "homepage": "https://github.com/VirgilSecurity/pythia-node#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "mocha": "^5.1.1"
+  }
+}
