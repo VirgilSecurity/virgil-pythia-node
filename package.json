@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/VirgilSecurity/pythia-node#readme",
   "dependencies": {
-    "babel-cli": "^6.26.0"
+    "babel-cli": "^6.26.0",
+    "node-fetch": "^2.1.2"
   },
   "babel": {
     "presets": [
