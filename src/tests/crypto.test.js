@@ -1,5 +1,5 @@
 import 'mocha';
-import assert from 'assert';
+import { assert } from 'chai';
 import { blind } from '../crypto/blind';
 import { deblind } from '../crypto/deblind';
 import { transform } from '../crypto/transform';
@@ -49,7 +49,7 @@ describe('Deblind Stability', () => {
 
 		for (let i = 0; i < iterationsCount; i++) {
 			let deblindedPassword = blindEvalDeblind();
-			assert.ok(deblindedPassword.equals(DEBLINDED_PASSWORD), 'deblined password is equal to pre-computed');
+			assert.isTrue(deblindedPassword.equals(DEBLINDED_PASSWORD), 'deblined password is equal to pre-computed');
 		}
 	});
 });
@@ -120,14 +120,15 @@ describe('Update Delta', () => {
 		);
 
 		const newDeblindedPassword = deblind(newTransformedPassword, newBlindingSecret);
-		assert.ok(updatedDeblindedPassword.equals(newDeblindedPassword), 'updated password is equal to computed');
+		assert.isTrue(updatedDeblindedPassword.equals(newDeblindedPassword), 'updated password is equal to computed');
 	});
 });
 
 describe('Blind Huge Password', () => {
-	it ('works with huge passwords', () => {
-		const hugePassword = PASSWORD.repeat(16);
-		const blindResult = blind(hugePassword);
-		assert.ok(blindResult);
+	it ('throws when given a huge password', () => {
+		const hugePassword = '1'.repeat(129);
+		assert.throws(() => {
+			blind(hugePassword);
+		});
 	});
 });
