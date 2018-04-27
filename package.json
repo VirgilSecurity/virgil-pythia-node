@@ -4,7 +4,8 @@
   "description": "Virgil Pythia Service Client",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require babel-register \"src/tests/**/*.test.js\""
+    "test": "mocha --require babel-register \"src/tests/**/*.test.js\"",
+    "postinstall": "node scripts/download-node-addon.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,10 @@
   },
   "homepage": "https://github.com/VirgilSecurity/pythia-node#readme",
   "dependencies": {
-    "node-fetch": "^2.1.2"
+    "node-fetch": "^2.1.2",
+    "tar": "^4.4.1",
+    "tempy": "^0.2.1",
+    "yauzl": "^2.9.1"
   },
   "babel": {
     "presets": [
