@@ -1,4 +1,4 @@
-import { blind, deblind, generateSalt, verify } from '../crypto';
+import { blind, deblind, generateSalt, updateDeblindedWithToken, verify } from '../crypto';
 import { PythiaUser } from './PythiaUser';
 
 export class Pythia {
@@ -75,8 +75,33 @@ export class Pythia {
 	}
 
 	updateUser(updateToken, pythiaUser) {
-		throw new Error('Not implemented');
+		const { prevVersion, nextVersion, token } = parseUpdateToken(updateToken);
+		if (pythiaUser.version === nextVersion) {
+			throw new Error('This user\' password has already been migrated');
+		}
+
+		if (pythiaUser.version !== prevVersion) {
+			throw new Error(
+				`This user\' password version is incorrect. Expected ${prevVersion}, got ${pythiaUser.version}`
+			)
+		}
+
+		const newDeblindedPassword = updateDeblindedWithToken(pythiaUser.deblindedPassword, token);
+		return new PythiaUser(pythiaUser.salt, newDeblindedPassword, nextVersion);
 	}
+}
+
+function parseUpdateToken(updateToken) {
+	const parts = updateToken.split('.');
+	if (parts.length !== 4 || parts[0] !== 'UT') {
+		throw new Error('UpdateToken string is invalid');
+	}
+
+	return {
+		prevVersion: Number(parts[1]),
+		nextVersion: Number(parts[2]),
+		token: Buffer.from(parts[3], 'base64')
+	};
 }
 
 function makeTokenContext() {
