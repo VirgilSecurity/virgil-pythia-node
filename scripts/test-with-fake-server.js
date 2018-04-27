@@ -11,6 +11,32 @@ const pythia = createPythia({
 	apiUrl: process.env.VIRGIL_API_URL
 });
 
-pythia.register('my password')
-	.then(user => console.log(JSON.stringify(user)))
+const thePassword = 'my password';
+
+pythia.register(thePassword)
+	.then(user => {
+		console.log('Registered');
+		console.log(JSON.stringify(user));
+		return user;
+	})
+	.then(user => {
+		console.log('Trying to authenticate with wrong password');
+		return pythia.authenticate('wrong password', user, false)
+			.then(authenticated => {
+				if (authenticated) {
+					throw new Error('Authenticated with a wrong password');
+				}
+
+				console.log('Now the right password');
+				return pythia.authenticate(thePassword, user, false);
+			})
+			.then(authenticated => {
+				if (authenticated) {
+					console.log('Welcome, %username%!');
+					return;
+				}
+
+				throw new Error('Authentication failed with correct password');
+			});
+	})
 	.catch(err => console.log(err));

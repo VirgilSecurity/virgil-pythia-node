@@ -9,8 +9,37 @@ export class Pythia {
 		this.client = client;
 	}
 
-	authenticate(password, pythiaUser, prove = false) {
-		throw new Error('Not implemented');
+	authenticate(password, pythiaUser, includeProof) {
+		const { blindedPassword, blindingSecret } = blind(password);
+		const proofKey = this.proofKeys.proofKey(pythiaUser.version);
+
+		return this.accessTokenProvider.getToken(makeTokenContext()).then(accessToken =>
+			this.client.transformPassword({
+				blindedPassword,
+				salt: pythiaUser.salt,
+				version: pythiaUser.version,
+				includeProof,
+				token: accessToken.toString()
+			})
+		).then(({ transformedPassword, proof }) => {
+			if (includeProof) {
+				const verified = verify(
+					transformedPassword,
+					blindedPassword,
+					pythiaUser.salt,
+					proofKey.key,
+					proof.valueC,
+					proof.valueU
+				);
+
+				if (!verified) {
+					throw new Error('Transformed password verification has failed');
+				}
+			}
+
+			const deblindedPassword = deblind(transformedPassword, blindingSecret);
+			return deblindedPassword.equals(pythiaUser.deblindedPassword);
+		});
 	}
 
 	register(password) {
@@ -18,8 +47,7 @@ export class Pythia {
 		const { blindedPassword, blindingSecret } = blind(password);
 		const latestProofKey = this.proofKeys.currentKey();
 
-		const tokenContext = { service: 'pythia', operation: 'transform', forceReload: false };
-		return this.accessTokenProvider.getToken(tokenContext).then(accessToken =>
+		return this.accessTokenProvider.getToken(makeTokenContext()).then(accessToken =>
 			this.client.transformPassword({
 				blindedPassword,
 				salt,
@@ -49,4 +77,8 @@ export class Pythia {
 	updateUser(updateToken, pythiaUser) {
 		throw new Error('Not implemented');
 	}
+}
+
+function makeTokenContext() {
+	return { service: 'pythia', operation: 'transform', forceReload: false };
 }
