@@ -1,8 +1,8 @@
 export class PythiaUser {
 
 	constructor(salt, deblindedPassword, version) {
-		this.salt = salt;
-		this.deblindedPassword = deblindedPassword;
+		this.salt = ensureBuffer(salt, 'salt');
+		this.deblindedPassword = ensureBuffer(deblindedPassword, 'deblindedPassword');
 		this.version = version;
 	}
 
@@ -13,4 +13,16 @@ export class PythiaUser {
 			version: this.version
 		};
 	}
+}
+
+function ensureBuffer(arg, name) {
+	if (Buffer.isBuffer(arg)) {
+		return arg;
+	}
+
+	if (typeof arg === 'string') {
+		return Buffer.from(arg, 'base64');
+	}
+
+	throw new TypeError(`Invalid argument '${name}'. Expected Buffer or string, got ${typeof arg}`);
 }
