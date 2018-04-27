@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --require babel-register \"src/tests/**/*.test.js\"",
-    "postinstall": "node scripts/download-node-addon.js"
+    "postinstall": "node scripts/download-node-addon.js",
+    "start:fake": "node fake-server.js",
+    "test:fake": "node scripts/test-with-fake-server.js"
   },
   "repository": {
     "type": "git",
@@ -38,6 +40,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
+    "dotenv": "^5.0.1",
     "mocha": "^5.1.1",
     "sinon": "^4.5.0"
   }
