@@ -1,3 +1,5 @@
+import { toArray } from '../utils/toArray';
+
 export class ProofKeys {
 	constructor(proofKeys) {
 		proofKeys = toArray(proofKeys);
@@ -21,7 +23,7 @@ export class ProofKeys {
 	proofKey(version) {
 		const proofKey = this.proofKeys.find(k => k.version === version);
 		if (proofKey === undefined) {
-			throw new Error(`No proof key exists of version ${version}`);
+			throw new Error(`Proof key of version ${version} does not exist`);
 		}
 
 		return proofKey;
@@ -35,16 +37,10 @@ function parseProofKey(str) {
 	}
 
 	const version = Number(parts[1]);
-	const data = Buffer.from(parts[2], 'base64');
+	const key = Buffer.from(parts[2], 'base64');
 
 	return {
 		version,
-		data
+		key
 	};
-}
-
-function toArray(arg) {
-	return arg == null
-		? arg
-		: Array.isArray(arg) ? arg : [ arg ];
 }
