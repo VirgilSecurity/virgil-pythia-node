@@ -1,0 +1,9 @@
+export { blind } from './blind';
+export { computeTransformationKeyPair } from './computeTransformationKeyPair';
+export { deblind } from './deblind';
+export { generateSalt } from './generateSalt';
+export { getPasswordUpdateToken } from './getPasswordUpdateToken';
+export { prove } from './prove';
+export { transform } from './transform';
+export { updateDeblindedWithToken } from './updateDeblindedWithToken';
+export { verify } from './verify';

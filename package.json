@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --require babel-register \"src/tests/**/*.test.js\"",
-    "postinstall": "node scripts/download-node-addon.js"
+    "postinstall": "node scripts/download-node-addon.js",
+    "start:fake": "node fake-server.js",
+    "test:fake": "node scripts/test-with-fake-server.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,8 @@
     "node-fetch": "^2.1.2",
     "tar": "^4.4.1",
     "tempy": "^0.2.1",
+    "virgil-crypto": "^3.0.0-alpha.7",
+    "virgil-sdk": "^5.0.0-alpha.2",
     "yauzl": "^2.9.1"
   },
   "babel": {
@@ -36,6 +40,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
+    "dotenv": "^5.0.1",
     "mocha": "^5.1.1",
     "sinon": "^4.5.0"
   }
