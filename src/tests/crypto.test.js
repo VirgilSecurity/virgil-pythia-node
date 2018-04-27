@@ -8,7 +8,7 @@ import { prove } from '../crypto/prove';
 import { verify } from '../crypto/verify';
 import { getPasswordUpdateToken } from '../crypto/getPasswordUpdateToken';
 import { updateDeblindedWithToken } from '../crypto/updateDeblindedWithToken';
-
+import { generateSalt } from '../crypto/generateSalt';
 
 const DEBLINDED_PASSWORD_HEX = '13273238e3119262f86d3213b8eb6b99c093ef48737d' +
 	'fcfae96210f7350e096cbc7e6b992e4e6f705ac3f0a915d1622c1644596408e3d16126d' +
@@ -132,3 +132,10 @@ describe('Blind Huge Password', () => {
 		});
 	});
 });
+
+describe('generate salt', () => {
+	it ('generates 32 bytes by default', () => {
+		const salt = generateSalt();
+		assert.equal(salt.length, 32);
+	});
+})
