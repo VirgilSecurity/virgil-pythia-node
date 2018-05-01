@@ -41,7 +41,7 @@ describe('ProofKeys', () => {
 		assert.isTrue(actualProofKey100.key.equals(proofKey100PublicKey));
 	});
 
-	it ('identifies proof key with the lowest version as current', () => {
+	it ('identifies proof key with the greatest version as current', () => {
 		const proofKey99PublicKey = randomBytes(16);
 		const proofKey99Version = 99;
 		const proofKey100PublicKey = randomBytes(16);
@@ -53,7 +53,7 @@ describe('ProofKeys', () => {
 		]);
 
 		const currentKey = proofKeys.currentKey();
-		assert.equal(currentKey.version, 99);
+		assert.equal(currentKey.version, 100);
 	});
 
 	it ('throws when queried for key that does not exist', () => {

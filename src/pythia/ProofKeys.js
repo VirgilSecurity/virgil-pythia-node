@@ -32,7 +32,8 @@ export class ProofKeys {
 }
 
 function compareVersion(proofKeyA, proofKeyB) {
-	return proofKeyA.version - proofKeyB.version;
+	// sort in descending order
+	return proofKeyB.version - proofKeyA.version;
 }
 
 function parseProofKey(str) {
