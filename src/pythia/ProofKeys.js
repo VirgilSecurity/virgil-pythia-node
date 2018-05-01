@@ -8,7 +8,7 @@ export class ProofKeys {
 			throw new Error('Parameter `proofKeys` must not be empty');
 		}
 
-		this.proofKeys = proofKeys.map(parseProofKey);
+		this.proofKeys = proofKeys.map(parseProofKey).sort(compareVersion);
 	}
 
 	currentKey() {
@@ -23,11 +23,16 @@ export class ProofKeys {
 	proofKey(version) {
 		const proofKey = this.proofKeys.find(k => k.version === version);
 		if (proofKey === undefined) {
+			// Something very bad has happened. Probably, unsuccessful migration
 			throw new Error(`Proof key of version ${version} does not exist`);
 		}
 
 		return proofKey;
 	}
+}
+
+function compareVersion(proofKeyA, proofKeyB) {
+	return proofKeyA.version - proofKeyB.version;
 }
 
 function parseProofKey(str) {
