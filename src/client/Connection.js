@@ -20,6 +20,8 @@ function normalizeOptions(opts) {
 		delete opts.accessToken;
 	}
 
+	opts.headers = headers;
+
 	if (opts.body) {
 		const json = JSON.stringify(opts.body);
 		if (!headers.has('Content-Type')) {
