@@ -12,7 +12,7 @@ const crypto = require('crypto');
 
 const destFilePath = path.resolve(__dirname + '/../virgil_crypto_nodejs.node');
 
-const cryptoVersion = process.env.VIRGIL_CRYPTO_VERSION || '2.4.0-rc1';
+const cryptoVersion = process.env.VIRGIL_CRYPTO_VERSION || '2.4.2';
 const nodeVersion = getNodeVersion();
 const platform = getPlatform();
 const arch = getArch();
