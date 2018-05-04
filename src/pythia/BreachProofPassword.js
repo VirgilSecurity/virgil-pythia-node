@@ -1,4 +1,4 @@
-export class PythiaUser {
+export class BreachProofPassword {
 
 	constructor(salt, deblindedPassword, version) {
 		this.salt = ensureBuffer(salt, 'salt');

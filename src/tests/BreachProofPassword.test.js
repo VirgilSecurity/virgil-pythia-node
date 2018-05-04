@@ -1,16 +1,16 @@
 import 'mocha';
 import { assert } from 'chai';
 import { randomBytes } from 'crypto';
-import { PythiaUser } from '../pythia/PythiaUser';
+import { BreachProofPassword } from '../pythia/BreachProofPassword';
 
-describe('PythiaUser', () => {
+describe('BreachProofPassword', () => {
 	it ('can be serialized with JSON.stringify', () => {
 		const salt = randomBytes(16);
 		const deblindedPassword = randomBytes(16);
 		const version = 1;
 
-		const pythiaUser = new PythiaUser(salt, deblindedPassword, version);
-		const serialized = JSON.stringify(pythiaUser);
+		const bpPassword = new BreachProofPassword(salt, deblindedPassword, version);
+		const serialized = JSON.stringify(bpPassword);
 		assert.isOk(serialized, 'serialized to string');
 		const parsed = JSON.parse(serialized);
 		assert.equal(parsed.salt, salt.toString('base64'));

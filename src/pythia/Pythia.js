@@ -1,5 +1,5 @@
 import { blind, deblind, generateSalt, updateDeblindedWithToken, verify } from '../crypto';
-import { PythiaUser } from './PythiaUser';
+import { BreachProofPassword } from './BreachProofPassword';
 
 export class Pythia {
 	constructor(params) {
@@ -9,15 +9,15 @@ export class Pythia {
 		this.client = client;
 	}
 
-	authenticate(password, pythiaUser, includeProof) {
+	verifyBreachProofPassword(password, breachProofPassword, includeProof) {
 		const { blindedPassword, blindingSecret } = blind(password);
-		const proofKey = this.proofKeys.proofKey(pythiaUser.version);
+		const proofKey = this.proofKeys.proofKey(breachProofPassword.version);
 
 		return this.accessTokenProvider.getToken(makeTokenContext()).then(accessToken =>
 			this.client.transformPassword({
 				blindedPassword,
-				salt: pythiaUser.salt,
-				version: pythiaUser.version,
+				salt: breachProofPassword.salt,
+				version: breachProofPassword.version,
 				includeProof,
 				token: accessToken.toString()
 			})
@@ -26,7 +26,7 @@ export class Pythia {
 				const verified = verify(
 					transformedPassword,
 					blindedPassword,
-					pythiaUser.salt,
+					breachProofPassword.salt,
 					proofKey.key,
 					proof.valueC,
 					proof.valueU
@@ -38,11 +38,11 @@ export class Pythia {
 			}
 
 			const deblindedPassword = deblind(transformedPassword, blindingSecret);
-			return deblindedPassword.equals(pythiaUser.deblindedPassword);
+			return deblindedPassword.equals(breachProofPassword.deblindedPassword);
 		});
 	}
 
-	register(password) {
+	createBreachProofPassword(password) {
 		const salt = generateSalt();
 		const { blindedPassword, blindingSecret } = blind(password);
 		const latestProofKey = this.proofKeys.currentKey();
@@ -70,24 +70,24 @@ export class Pythia {
 			}
 
 			const deblindedPassword = deblind(transformedPassword, blindingSecret);
-			return new PythiaUser(salt, deblindedPassword, latestProofKey.version);
+			return new BreachProofPassword(salt, deblindedPassword, latestProofKey.version);
 		});
 	}
 
-	updateUser(updateToken, pythiaUser) {
+	updateBreachProofPassword(updateToken, breachProofPassword) {
 		const { prevVersion, nextVersion, token } = parseUpdateToken(updateToken);
-		if (pythiaUser.version === nextVersion) {
-			throw new Error('This user\' password has already been migrated');
+		if (breachProofPassword.version === nextVersion) {
+			throw new Error('Breach-proof password has already been migrated');
 		}
 
-		if (pythiaUser.version !== prevVersion) {
+		if (breachProofPassword.version !== prevVersion) {
 			throw new Error(
-				`This user\' password version is incorrect. Expected ${prevVersion}, got ${pythiaUser.version}`
+				`Breach-proof password version is wrong. Expected ${prevVersion}, got ${breachProofPassword.version}`
 			)
 		}
 
-		const newDeblindedPassword = updateDeblindedWithToken(pythiaUser.deblindedPassword, token);
-		return new PythiaUser(pythiaUser.salt, newDeblindedPassword, nextVersion);
+		const newDeblindedPassword = updateDeblindedWithToken(breachProofPassword.deblindedPassword, token);
+		return new BreachProofPassword(breachProofPassword.salt, newDeblindedPassword, nextVersion);
 	}
 }
 
