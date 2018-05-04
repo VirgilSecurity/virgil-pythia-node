@@ -2,6 +2,7 @@ import 'mocha';
 import { assert } from 'chai';
 import { randomBytes } from 'crypto';
 import { ProofKeys } from '../pythia/ProofKeys';
+import data from './data/pythia-sdk';
 
 function getProofKeyString(version, publicKey) {
 	return `PK.${version}.${publicKey.toString('base64')}`;
@@ -61,5 +62,17 @@ describe('ProofKeys', () => {
 		assert.throws(() => {
 			proofKeys.proofKey(99);
 		}, /does not exist/);
+	});
+
+	it ('throws when initialized with empty list', () => {
+		assert.throws(() => {
+			new ProofKeys([]);
+		}, /empty/)
+	});
+
+	it ('throws when initialized with invalid key', () => {
+		assert.throws(() => {
+			new ProofKeys(data.kInvalidProofKey);
+		}, /invalid/);
 	});
 });
