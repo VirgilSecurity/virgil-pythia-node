@@ -6,6 +6,5 @@
 				"node": "6"
 			}
 		}]
-	],
-	"ignore": "src/tests/**"
+	]
 }
