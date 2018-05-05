@@ -58,3 +58,5 @@ typings/
 .env
 
 virgil_crypto_nodejs.node
+
+dist/
