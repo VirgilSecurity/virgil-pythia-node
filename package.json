@@ -4,10 +4,9 @@
   "description": "Virgil Pythia Service Client",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require babel-register \"src/tests/**/*.test.js\"",
+    "test": "mocha --require babel-register --require dotenv/config \"src/tests/**/*.test.js\"",
     "postinstall": "node scripts/download-node-addon.js",
-    "start:fake": "node fake-server.js",
-    "test:fake": "node scripts/test-with-fake-server.js"
+    "start:fake": "node fake-server.js"
   },
   "repository": {
     "type": "git",
