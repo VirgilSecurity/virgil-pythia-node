@@ -1,14 +1,21 @@
 {
-  "name": "pythia-node",
-  "version": "0.0.0",
+  "name": "virgil-pythia",
+  "version": "0.1.0",
   "description": "Virgil Pythia Service Client",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "mocha --require babel-register \"src/tests/**/*.test.js\"",
+    "build": "babel src -d dist --ignore test.js",
+    "clean": "rimraf dist",
+    "test": "mocha --require babel-register --require dotenv/config \"src/tests/**/*.test.js\"",
     "postinstall": "node scripts/download-node-addon.js",
     "start:fake": "node fake-server.js",
-    "test:fake": "node scripts/test-with-fake-server.js"
+    "preversion": "npm run test",
+    "version": "npm run clean && npm run build"
   },
+  "files": [
+    "dist",
+    "scripts/download-node-addon.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/VirgilSecurity/pythia-node.git"
@@ -42,6 +49,7 @@
     "chai": "^4.1.2",
     "dotenv": "^5.0.1",
     "mocha": "^5.1.1",
+    "rimraf": "^2.6.2",
     "sinon": "^4.5.0"
   }
 }

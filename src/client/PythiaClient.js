@@ -1,4 +1,5 @@
 import { Connection } from './Connection';
+import { PythiaClientError } from './PythiaClientError';
 
 export class PythiaClient {
 
@@ -35,8 +36,11 @@ export class PythiaClient {
 			}
 		).then(response => {
 			if (!response.ok) {
-				// TODO throw custom error
-				throw new Error(`HttpError: ${response.status} - ${response.statusText}`);
+				return response.json().then(reason => {
+					const message = reason.message || response.statusText;
+					throw new PythiaClientError(message, reason.code, response.status);
+				});
+
 			}
 
 			return response.json();
