@@ -1,5 +1,5 @@
 {
-  "name": "pythia-node",
+  "name": "virgil-pythia",
   "version": "0.0.0",
   "description": "Virgil Pythia Service Client",
   "main": "dist/index.js",
