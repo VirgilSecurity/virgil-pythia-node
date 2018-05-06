@@ -105,7 +105,6 @@ So, in order to create a user's breach-proof password for a new database or exis
 pythia.createBreachProofPassword('USER_PASSWORD')
 	.then(bpPassword => {
 		// save the breach-proof password parameters into your database
-        fmt.Println(pwd.Salt, pwd.DeblindedPassword, pwd.Version)
         console.log(bpPassword.salt.toString('base64')); // salt is a Buffer
         console.log(bpPassword.deblindedPassword.toString('base64')); // deblindedPassword is a Buffer
         console.log(bpPassword.version);
