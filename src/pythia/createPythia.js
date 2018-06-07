@@ -8,6 +8,11 @@ import { VirgilPythiaCrypto } from '../crypto/VirgilPythiaCrypto';
 const PYTHIA_CLIENT_IDENTITY = 'PYTHIA-CLIENT';
 const ONE_HOUR = 60 * 60 * 1000;
 
+/**
+ * Factory function used to create instances of {@link Pythia} class.
+ * @param params - Dependencies needed for `Pythia`.
+ * @returns {Pythia}
+ */
 export function createPythia(params) {
 	const { apiKeyBase64, apiKeyId, appId, proofKeys, apiUrl } = params;
 

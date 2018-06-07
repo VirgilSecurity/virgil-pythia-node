@@ -1,6 +1,18 @@
 import { BreachProofPassword } from './BreachProofPassword';
+import { constantTimeEqual } from '../utils/constantTimeEqual';
 
+/**
+ * Class responsible generation, verification and updating of breach-proof passwords.
+ *
+ * `Pythia` instances are not meant to be created directly using the `new` keyword,
+ * use {@link createPythia} method to create an instance.
+ */
 export class Pythia {
+
+	/**
+	 * Creates a new instance of `Pythia`.
+	 * @param params - Pythia configuration.
+	 */
 	constructor(params) {
 		const { proofKeys, accessTokenProvider, client, pythiaCrypto } = params;
 		this.proofKeys = proofKeys;
@@ -9,6 +21,19 @@ export class Pythia {
 		this.pythiaCrypto = pythiaCrypto;
 	}
 
+	/**
+	 * Checks whether the given plaintext `password` corresponds to
+	 * the given `breachProofPassword`.
+	 *
+	 * @param password - The plaintext password.
+	 * @param breachProofPassword - The breach-proof password.
+	 * @param [includeProof] - Indicates whether to instruct the Pythia Server to include
+	 * the cryptographic proof that transformed blinded password was generated correctly.
+	 * Default is `false`.
+	 *
+	 * @returns {Promise<boolean>} `true` if plaintext password corresponds to the
+	 * breach-proof password, otherwise `false`.
+	 */
 	verifyBreachProofPassword(password, breachProofPassword, includeProof) {
 		const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
 		const proofKey = this.proofKeys.proofKey(breachProofPassword.version);
@@ -42,6 +67,13 @@ export class Pythia {
 		});
 	}
 
+	/**
+	 * Creates a breach-proof password from the given plaintext `password`.
+	 *
+	 * @param password - The plaintext password.
+	 *
+	 * @returns {Promise<BreachProofPassword>}
+	 */
 	createBreachProofPassword(password) {
 		const salt = this.pythiaCrypto.generateSalt();
 		const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
@@ -74,6 +106,15 @@ export class Pythia {
 		});
 	}
 
+	/**
+	 * Generates a new breach-proof password based on the current `breachProofPassword`
+	 * and `updateToken`.
+	 *
+	 * @param updateToken - The password update token. You can get it at Virgil Developer Dashboard.
+	 * @param breachProofPassword - The current breach-proof password.
+	 *
+	 * @returns {BreachProofPassword} - The new breach-proof password.
+	 */
 	updateBreachProofPassword(updateToken, breachProofPassword) {
 		const { prevVersion, nextVersion, token } = parseUpdateToken(updateToken);
 		if (breachProofPassword.version === nextVersion) {
@@ -109,23 +150,4 @@ function parseUpdateToken(updateToken) {
 
 function makeTokenContext() {
 	return { service: 'pythia', operation: 'transform', forceReload: false };
-}
-
-function constantTimeEqual (buf1, buf2) {
-	if (!(Buffer.isBuffer(buf1) && Buffer.isBuffer(buf2))) {
-		throw new Error(
-			'Only Buffer instances can be checked for equality'
-		);
-	}
-
-	if (buf1.byteLength !== buf2.byteLength) {
-		throw new Error('Both buffers must be of the same length');
-	}
-
-	let equal = 0;
-	for (let i = 0; i < buf1.length; i++) {
-		equal |= buf1[i] ^ buf2[i];
-	}
-
-	return equal === 0;
 }
