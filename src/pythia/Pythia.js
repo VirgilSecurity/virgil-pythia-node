@@ -1,16 +1,16 @@
-import { blind, deblind, generateSalt, updateDeblindedWithToken, verify } from '../crypto';
 import { BreachProofPassword } from './BreachProofPassword';
 
 export class Pythia {
 	constructor(params) {
-		const { proofKeys, accessTokenProvider, client } = params;
+		const { proofKeys, accessTokenProvider, client, pythiaCrypto } = params;
 		this.proofKeys = proofKeys;
 		this.accessTokenProvider = accessTokenProvider;
 		this.client = client;
+		this.pythiaCrypto = pythiaCrypto;
 	}
 
 	verifyBreachProofPassword(password, breachProofPassword, includeProof) {
-		const { blindedPassword, blindingSecret } = blind(password);
+		const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
 		const proofKey = this.proofKeys.proofKey(breachProofPassword.version);
 
 		return this.accessTokenProvider.getToken(makeTokenContext()).then(accessToken =>
@@ -23,28 +23,28 @@ export class Pythia {
 			})
 		).then(({ transformedPassword, proof }) => {
 			if (includeProof) {
-				const verified = verify(
+				const verified = this.pythiaCrypto.verify({
 					transformedPassword,
 					blindedPassword,
-					breachProofPassword.salt,
-					proofKey.key,
-					proof.valueC,
-					proof.valueU
-				);
+					tweak: breachProofPassword.salt,
+					transformationPublicKey: proofKey.key,
+					proofValueC: proof.valueC,
+					proofValueU: proof.valueU
+				});
 
 				if (!verified) {
 					throw new Error('Transformed password verification has failed');
 				}
 			}
 
-			const deblindedPassword = deblind(transformedPassword, blindingSecret);
-			return deblindedPassword.equals(breachProofPassword.deblindedPassword);
+			const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
+			return constantTimeEqual(deblindedPassword, breachProofPassword.deblindedPassword);
 		});
 	}
 
 	createBreachProofPassword(password) {
-		const salt = generateSalt();
-		const { blindedPassword, blindingSecret } = blind(password);
+		const salt = this.pythiaCrypto.generateSalt();
+		const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
 		const latestProofKey = this.proofKeys.currentKey();
 
 		return this.accessTokenProvider.getToken(makeTokenContext()).then(accessToken =>
@@ -56,20 +56,20 @@ export class Pythia {
 				token: accessToken.toString()
 			})
 		).then(({ transformedPassword, proof }) => {
-			const verified = verify(
+			const verified = this.pythiaCrypto.verify({
 				transformedPassword,
 				blindedPassword,
-				salt,
-				latestProofKey.key,
-				proof.valueC,
-				proof.valueU
-			);
+				tweak: salt,
+				transformationPublicKey: latestProofKey.key,
+				proofValueC: proof.valueC,
+				proofValueU: proof.valueU
+			});
 
 			if (!verified) {
 				throw new Error('Transformed password verification has failed');
 			}
 
-			const deblindedPassword = deblind(transformedPassword, blindingSecret);
+			const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
 			return new BreachProofPassword(salt, deblindedPassword, latestProofKey.version);
 		});
 	}
@@ -86,7 +86,10 @@ export class Pythia {
 			)
 		}
 
-		const newDeblindedPassword = updateDeblindedWithToken(breachProofPassword.deblindedPassword, token);
+		const newDeblindedPassword = this.pythiaCrypto.updateDeblinded({
+			deblindedPassword: breachProofPassword.deblindedPassword,
+			updateToken: token
+		});
 		return new BreachProofPassword(breachProofPassword.salt, newDeblindedPassword, nextVersion);
 	}
 }
@@ -106,4 +109,23 @@ function parseUpdateToken(updateToken) {
 
 function makeTokenContext() {
 	return { service: 'pythia', operation: 'transform', forceReload: false };
+}
+
+function constantTimeEqual (buf1, buf2) {
+	if (!(Buffer.isBuffer(buf1) && Buffer.isBuffer(buf2))) {
+		throw new Error(
+			'Only Buffer instances can be checked for equality'
+		);
+	}
+
+	if (buf1.byteLength !== buf2.byteLength) {
+		throw new Error('Both buffers must be of the same length');
+	}
+
+	let equal = 0;
+	for (let i = 0; i < buf1.length; i++) {
+		equal |= buf1[i] ^ buf2[i];
+	}
+
+	return equal === 0;
 }

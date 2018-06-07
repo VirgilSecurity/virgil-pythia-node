@@ -7,14 +7,12 @@
     "build": "babel src -d dist --ignore test.js",
     "clean": "rimraf dist",
     "test": "mocha --require babel-register --require dotenv/config \"src/tests/**/*.test.js\"",
-    "postinstall": "node scripts/download-node-addon.js",
     "start:fake": "node fake-server.js",
     "preversion": "npm run test",
     "version": "npm run clean && npm run build"
   },
   "files": [
-    "dist",
-    "scripts/download-node-addon.js"
+    "dist"
   ],
   "repository": {
     "type": "git",
