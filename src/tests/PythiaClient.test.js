@@ -5,7 +5,7 @@ import { randomBytes } from 'crypto';
 import { PythiaClient } from '../client/PythiaClient';
 import { Connection } from '../client/Connection';
 
-describe.only ('PythiaClient', () => {
+describe ('PythiaClient', () => {
 	let connectionStub, sendStub;
 
 	beforeEach(() => {
@@ -186,7 +186,7 @@ describe.only ('PythiaClient', () => {
 		});
 	});
 
-	describe.only ('generateSeed', () => {
+	describe ('generateSeed', () => {
 		it ('transforms arguments', () => {
 			const client = new PythiaClient(connectionStub);
 
