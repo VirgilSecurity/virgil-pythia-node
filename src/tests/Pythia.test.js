@@ -1,5 +1,6 @@
 import 'mocha';
 import { assert } from 'chai';
+import { sleep } from './utils/sleep';
 import { createPythia } from '../pythia/createPythia';
 
 const proofKeyList = process.env.MY_PROOF_KEYS.split(';');
@@ -40,10 +41,8 @@ describe('Pythia', function () {
 				});
 		});
 
-		beforeEach(() => {
-			// this is needed due to rate limiting on the server side
-			return sleep(2000);
-		});
+		// this is needed due to rate limiting on the server side
+		beforeEach(() => sleep(2000));
 
 		it ('verifies password without proof', () => {
 			return pythia.verifyBreachProofPassword(thePassword, breachProofPassword, false)
@@ -142,7 +141,3 @@ describe('Pythia', function () {
 		});
 	});
 });
-
-function sleep(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
