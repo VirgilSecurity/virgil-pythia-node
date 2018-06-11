@@ -1,10 +1,12 @@
 {
 	"presets": [
 		["babel-preset-env", {
-			"modules": "commonjs",
+			"modules": false,
 			"targets": {
-				"node": "6"
+				"node": "6",
+				"browsers": "> 1%"
 			}
 		}]
-	]
+	],
+	"plugins": [ "external-helpers" ]
 }

@@ -1,4 +1,4 @@
-import { createVirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
+import { createVirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto/dist/virgil-crypto-pythia.es';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 import { ProofKeys } from './ProofKeys';
 import { Pythia } from './Pythia';

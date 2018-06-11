@@ -1,9 +1,5 @@
 /**
  * Represents a user's breach-proof password parameters.
- *
- * Instances of `BreachProofPassword` are not meant to be created with
- * the `new` keyword. Use {@link Pythia.createBreachProofPassword} to create
- * a `BreachProofPassword`.
  */
 export class BreachProofPassword {
 

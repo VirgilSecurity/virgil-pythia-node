@@ -1,5 +1,3 @@
-import { inherits } from 'util';
-
 /**
  * An error thrown when an HTTP request to the Virgil API fails.
  * @param message - Error message
@@ -8,16 +6,20 @@ import { inherits } from 'util';
  * @constructor
  */
 function PythiaClientError(message, code, httpStatus) {
-	this.name = this.constructor.name;
 	this.message = message;
 	this.code = code;
 	this.httpStatus = httpStatus;
 	if (Error.captureStackTrace) {
 		Error.captureStackTrace(this, this.constructor);
+	} else {
+		this.stack = (new Error()).stack;
 	}
 }
 
-inherits(PythiaClientError, Error);
+PythiaClientError.prototype = Object.create(Error.prototype);
+PythiaClientError.prototype.name = 'PythiaClientError';
+PythiaClientError.prototype.constructor = PythiaClientError;
+
 
 export { PythiaClientError };
 
