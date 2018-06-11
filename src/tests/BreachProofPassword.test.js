@@ -1,12 +1,10 @@
-import 'mocha';
-import { assert } from 'chai';
-import { randomBytes } from 'crypto';
+import { getRandomBytes } from './utils/getRandomBytes';
 import { BreachProofPassword } from '../pythia/BreachProofPassword';
 
 describe('BreachProofPassword', () => {
 	it ('can be serialized with JSON.stringify', () => {
-		const salt = randomBytes(16);
-		const deblindedPassword = randomBytes(16);
+		const salt = getRandomBytes(16);
+		const deblindedPassword = getRandomBytes(16);
 		const version = 1;
 
 		const bpPassword = new BreachProofPassword(salt, deblindedPassword, version);

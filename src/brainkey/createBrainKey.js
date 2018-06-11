@@ -2,7 +2,7 @@ import {
 	createVirgilCrypto,
 	VirgilAccessTokenSigner,
 	KeyPairType
-} from 'virgil-crypto/dist/virgil-crypto-pythia.es';
+} from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 import { PythiaClient } from '../client/PythiaClient';
 import { VirgilPythiaCrypto } from '../crypto/VirgilPythiaCrypto';

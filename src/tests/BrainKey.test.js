@@ -1,6 +1,4 @@
-import 'mocha';
 import sinon from 'sinon';
-import { assert } from 'chai';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 import { VirgilPythia, createVirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
 import { sleep } from './utils/sleep';
@@ -13,6 +11,7 @@ const virgilPythia = new VirgilPythia();
 const virgilCrypto = createVirgilCrypto();
 
 describe ('BrainKey', function () {
+	this.timeout(10000);
 
 	describe ('SDK Compatibility (YTC-21)', () => {
 		let brainKeyWithStubClient;
@@ -83,8 +82,7 @@ describe ('BrainKey', function () {
 		});
 	});
 
-	describe ('Integration', function () {
-		this.timeout(10000);
+	describe ('Integration', () => {
 
 		let brainKey, keyPair1Identifier;
 		before(() => {

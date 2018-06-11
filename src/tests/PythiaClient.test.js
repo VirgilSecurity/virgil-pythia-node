@@ -1,7 +1,5 @@
-import 'mocha';
-import { assert } from 'chai';
 import sinon from 'sinon';
-import { randomBytes } from 'crypto';
+import { getRandomBytes } from './utils/getRandomBytes';
 import { PythiaClient } from '../client/PythiaClient';
 import { Connection } from '../client/Connection';
 
@@ -18,13 +16,13 @@ describe ('PythiaClient', () => {
 			const client = new PythiaClient(connectionStub);
 
 			const params = {
-				salt: randomBytes(32),
-				blindedPassword: randomBytes(64),
+				salt: getRandomBytes(32),
+				blindedPassword: getRandomBytes(64),
 				token: 'stub_jwt'
 			};
 
 			const stubResponse = {
-				transformed_password: randomBytes(64).toString('base64')
+				transformed_password: getRandomBytes(64).toString('base64')
 			};
 
 			sendStub.resolves(stubResponse);
@@ -52,13 +50,13 @@ describe ('PythiaClient', () => {
 			const client = new PythiaClient(connectionStub);
 
 			const params = {
-				salt: randomBytes(32),
-				blindedPassword: randomBytes(64),
+				salt: getRandomBytes(32),
+				blindedPassword: getRandomBytes(64),
 				token: 'stub_jwt'
 			};
 
 			const stubResponse = {
-				transformed_password: randomBytes(64).toString('base64')
+				transformed_password: getRandomBytes(64).toString('base64')
 			};
 
 			sendStub.resolves(stubResponse);
@@ -74,13 +72,13 @@ describe ('PythiaClient', () => {
 			const client = new PythiaClient(connectionStub);
 
 			const params = {
-				salt: randomBytes(32),
-				blindedPassword: randomBytes(64),
+				salt: getRandomBytes(32),
+				blindedPassword: getRandomBytes(64),
 				token: 'stub_jwt'
 			};
 
 			const stubResponse = {
-				transformed_password: randomBytes(64).toString('base64')
+				transformed_password: getRandomBytes(64).toString('base64')
 			};
 
 			sendStub.resolves(stubResponse);
@@ -96,17 +94,17 @@ describe ('PythiaClient', () => {
 			const client = new PythiaClient(connectionStub);
 
 			const params = {
-				salt: randomBytes(32),
-				blindedPassword: randomBytes(64),
+				salt: getRandomBytes(32),
+				blindedPassword: getRandomBytes(64),
 				token: 'stub_jwt',
 				includeProof: true
 			};
 
 			const stubResponse = {
-				transformed_password: randomBytes(64).toString('base64'),
+				transformed_password: getRandomBytes(64).toString('base64'),
 				proof: {
-					value_c: randomBytes(16).toString('base64'),
-					value_u: randomBytes(16).toString('base64')
+					value_c: getRandomBytes(16).toString('base64'),
+					value_u: getRandomBytes(16).toString('base64')
 				}
 			};
 
@@ -123,14 +121,14 @@ describe ('PythiaClient', () => {
 			const client = new PythiaClient(connectionStub);
 
 			const params = {
-				salt: randomBytes(32),
-				blindedPassword: randomBytes(64),
+				salt: getRandomBytes(32),
+				blindedPassword: getRandomBytes(64),
 				token: 'stub_jwt',
 				version: 1
 			};
 
 			const stubResponse = {
-				transformed_password: randomBytes(64).toString('base64')
+				transformed_password: getRandomBytes(64).toString('base64')
 			};
 
 			sendStub.resolves(stubResponse);
@@ -146,17 +144,17 @@ describe ('PythiaClient', () => {
 			const client = new PythiaClient(connectionStub);
 
 			const params = {
-				salt: randomBytes(32),
-				blindedPassword: randomBytes(64),
+				salt: getRandomBytes(32),
+				blindedPassword: getRandomBytes(64),
 				token: 'stub_jwt',
 				includeProof: true
 			};
 
 			const stubResponse = {
-				transformed_password: randomBytes(64).toString('base64'),
+				transformed_password: getRandomBytes(64).toString('base64'),
 				proof: {
-					value_c: randomBytes(16).toString('base64'),
-					value_u: randomBytes(16).toString('base64')
+					value_c: getRandomBytes(16).toString('base64'),
+					value_u: getRandomBytes(16).toString('base64')
 				}
 			};
 
@@ -191,13 +189,13 @@ describe ('PythiaClient', () => {
 			const client = new PythiaClient(connectionStub);
 
 			const params = {
-				blindedPassword: randomBytes(32),
+				blindedPassword: getRandomBytes(32),
 				brainKeyId: 'stub_brainkey_id',
 				token: 'stub_jwt'
 			};
 
 			const stubResponse = {
-				seed: randomBytes(64).toString('base64')
+				seed: getRandomBytes(64).toString('base64')
 			};
 
 			sendStub.resolves(stubResponse);
@@ -217,12 +215,12 @@ describe ('PythiaClient', () => {
 			const client = new PythiaClient(connectionStub);
 
 			const params = {
-				blindedPassword: randomBytes(32),
+				blindedPassword: getRandomBytes(32),
 				token: 'stub_jwt'
 			};
 
 			const stubResponse = {
-				seed: randomBytes(64).toString('base64')
+				seed: getRandomBytes(64).toString('base64')
 			};
 
 			sendStub.resolves(stubResponse);
@@ -237,12 +235,12 @@ describe ('PythiaClient', () => {
 			const client = new PythiaClient(connectionStub);
 
 			const params = {
-				blindedPassword: randomBytes(32),
+				blindedPassword: getRandomBytes(32),
 				token: 'stub_jwt'
 			};
 
 			const stubResponse = {
-				seed: randomBytes(64).toString('base64')
+				seed: getRandomBytes(64).toString('base64')
 			};
 
 			sendStub.resolves(stubResponse);

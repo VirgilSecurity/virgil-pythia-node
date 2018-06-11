@@ -1,5 +1,3 @@
-import 'mocha';
-import { assert } from 'chai';
 import { sleep } from './utils/sleep';
 import { createPythia } from '../pythia/createPythia';
 

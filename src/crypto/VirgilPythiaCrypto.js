@@ -1,4 +1,4 @@
-import { VirgilPythia } from 'virgil-crypto/dist/virgil-crypto-pythia.es';
+import { VirgilPythia } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
 
 const SALT_BYTE_LENGTH = 32;
 

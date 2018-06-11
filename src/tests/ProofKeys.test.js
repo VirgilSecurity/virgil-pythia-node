@@ -1,6 +1,4 @@
-import 'mocha';
-import { assert } from 'chai';
-import { randomBytes } from 'crypto';
+import { getRandomBytes } from './utils/getRandomBytes';
 import { ProofKeys } from '../pythia/ProofKeys';
 import data from './data/pythia-sdk';
 
@@ -10,7 +8,7 @@ function getProofKeyString(version, publicKey) {
 
 describe('ProofKeys', () => {
 	it ('parses proof key string', () => {
-		const proofKeyPublicKey = randomBytes(16);
+		const proofKeyPublicKey = getRandomBytes(16);
 		const proofKeyVersion = 99;
 		const proofKeys = new ProofKeys(
 			getProofKeyString(proofKeyVersion, proofKeyPublicKey)
@@ -23,9 +21,9 @@ describe('ProofKeys', () => {
 	});
 
 	it ('parses proof keys array', () => {
-		const proofKey99PublicKey = randomBytes(16);
+		const proofKey99PublicKey = getRandomBytes(16);
 		const proofKey99Version = 99;
-		const proofKey100PublicKey = randomBytes(16);
+		const proofKey100PublicKey = getRandomBytes(16);
 		const proofKey100Version = 100;
 
 		const proofKeys = new ProofKeys([
@@ -43,9 +41,9 @@ describe('ProofKeys', () => {
 	});
 
 	it ('identifies proof key with the greatest version as current', () => {
-		const proofKey99PublicKey = randomBytes(16);
+		const proofKey99PublicKey = getRandomBytes(16);
 		const proofKey99Version = 99;
-		const proofKey100PublicKey = randomBytes(16);
+		const proofKey100PublicKey = getRandomBytes(16);
 		const proofKey100Version = 100;
 
 		const proofKeys = new ProofKeys([
@@ -58,7 +56,7 @@ describe('ProofKeys', () => {
 	});
 
 	it ('throws when queried for key that does not exist', () => {
-		const proofKeys = new ProofKeys(getProofKeyString(1, randomBytes(16)));
+		const proofKeys = new ProofKeys(getProofKeyString(1, getRandomBytes(16)));
 		assert.throws(() => {
 			proofKeys.proofKey(99);
 		}, /does not exist/);
