@@ -12,10 +12,10 @@
   "scripts": {
     "rollup:cjs": "rollup -c config/rollup.config.cjs.js && rollup -c config/rollup.config.browser.cjs.js",
     "rollup:es": "rollup -c config/rollup.config.es.js && rollup -c config/rollup.config.browser.es.js",
-    "rollup:iife": "rollup -c config/rollup.config.iife.js",
+    "rollup:umd": "rollup -c config/rollup.config.umd.js",
     "rollup": "npm-run-all --parallel rollup:*",
     "clean": "rimraf dist",
-    "minify": "uglifyjs dist/virgil-pythia.iife.js -o dist/virgil-pythia.iife.min.js -c -m",
+    "minify": "uglifyjs dist/virgil-pythia.umd.js -o dist/virgil-pythia.umd.min.js -c -m",
     "build": "npm-run-all clean rollup minify",
     "test:node": "BABEL_ENV=test mocha --require babel-register --require dotenv/config --require chai/register-assert \"src/tests/**/*.test.js\"",
     "test:browser": "karma start",
