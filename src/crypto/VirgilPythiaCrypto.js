@@ -1,5 +1,3 @@
-import { VirgilPythia } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
-
 const SALT_BYTE_LENGTH = 32;
 
 /**
@@ -11,11 +9,12 @@ export class VirgilPythiaCrypto {
 	 * Creates a new instance of `VirgilPythiaCrypto`.
 	 * @param virgilCrypto - The VirgilCrypto library.
 	 */
-	constructor (virgilCrypto) {
+	constructor (virgilCrypto, virgilPythia) {
 		if (virgilCrypto == null) throw new Error('`virgilCrypto` is required');
+		if (virgilPythia == null) throw new Error('`virgilPythia` is required');
 
 		this.virgilCrypto = virgilCrypto;
-		this.virgilPythia = new VirgilPythia();
+		this.virgilPythia = virgilPythia;
 	}
 
 	/**

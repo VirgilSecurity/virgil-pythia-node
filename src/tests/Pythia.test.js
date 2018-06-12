@@ -1,3 +1,5 @@
+import { createVirgilCrypto, VirgilPythia, VirgilAccessTokenSigner } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
+import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 import { sleep } from './utils/sleep';
 import { createPythia } from '../pythia/createPythia';
 
@@ -5,15 +7,25 @@ const proofKeyList = process.env.MY_PROOF_KEYS.split(';');
 const updateToken = process.env.MY_UPDATE_TOKEN;
 const thePassword = 'my password';
 
-describe('Pythia', function () {
+describe ('Pythia', function () {
 	this.timeout(10000);
 
 	let pythia;
 	beforeEach(() => {
-		pythia = createPythia({
-			apiKeyBase64: process.env.VIRGIL_API_KEY,
+		const virgilCrypto = createVirgilCrypto();
+		const virgilPythia = new VirgilPythia();
+		const jwtGenerator = new JwtGenerator({
+			apiKey: virgilCrypto.importPrivateKey(process.env.VIRGIL_API_KEY),
 			apiKeyId: process.env.VIRGIL_API_KEY_ID,
 			appId: process.env.VIRGIL_APP_ID,
+			accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+			millisecondsToLive: 60 * 60 * 1000
+		});
+
+		pythia = createPythia({
+			virgilCrypto,
+			virgilPythia,
+			accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
 			proofKeys: proofKeyList[0], // use only the first key
 			apiUrl: process.env.VIRGIL_API_URL
 		});
@@ -82,10 +94,20 @@ describe('Pythia', function () {
 		});
 
 		it ('updates breach-proof password with update token', () => {
-			const updatedPythia = createPythia({
-				apiKeyBase64: process.env.VIRGIL_API_KEY,
+			const virgilCrypto = createVirgilCrypto();
+			const virgilPythia = new VirgilPythia();
+			const jwtGenerator = new JwtGenerator({
+				apiKey: virgilCrypto.importPrivateKey(process.env.VIRGIL_API_KEY),
 				apiKeyId: process.env.VIRGIL_API_KEY_ID,
 				appId: process.env.VIRGIL_APP_ID,
+				accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+				millisecondsToLive: 60 * 60 * 1000
+			});
+
+			const updatedPythia = createPythia({
+				virgilCrypto,
+				virgilPythia,
+				accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
 				proofKeys: proofKeyList, // use two keys
 				apiUrl: process.env.VIRGIL_API_URL
 			});
@@ -104,10 +126,20 @@ describe('Pythia', function () {
 		let updatedPythia, updatedBreachProofPassword;
 
 		before(() => {
-			updatedPythia = createPythia({
-				apiKeyBase64: process.env.VIRGIL_API_KEY,
+			const virgilCrypto = createVirgilCrypto();
+			const virgilPythia = new VirgilPythia();
+			const jwtGenerator = new JwtGenerator({
+				apiKey: virgilCrypto.importPrivateKey(process.env.VIRGIL_API_KEY),
 				apiKeyId: process.env.VIRGIL_API_KEY_ID,
 				appId: process.env.VIRGIL_APP_ID,
+				accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+				millisecondsToLive: 60 * 60 * 1000
+			});
+
+			updatedPythia = createPythia({
+				virgilCrypto,
+				virgilPythia,
+				accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
 				proofKeys: proofKeyList, // use two keys
 				apiUrl: process.env.VIRGIL_API_URL
 			});

@@ -148,6 +148,12 @@ function parseUpdateToken(updateToken) {
 	};
 }
 
-function makeTokenContext() {
-	return { service: 'pythia', operation: 'transform', forceReload: false };
+export function makeTokenContext () {
+	return {
+		service: 'pythia',
+		identity: 'PYTHIA-CLIENT',
+		operation: 'transform',
+		forceReload: false
+	};
 }
+

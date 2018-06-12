@@ -1,14 +1,11 @@
 import sinon from 'sinon';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
-import { VirgilPythia, createVirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
+import { createVirgilCrypto, VirgilPythia, VirgilAccessTokenSigner } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
 import { sleep } from './utils/sleep';
 import { createBrainKey } from '../brainkey/createBrainKey';
 import { BrainKey } from '../brainkey/BrainKey';
 import { VirgilPythiaCrypto } from '../crypto/VirgilPythiaCrypto';
 import data from './data/brainkey';
-
-const virgilPythia = new VirgilPythia();
-const virgilCrypto = createVirgilCrypto();
 
 describe ('BrainKey', function () {
 	this.timeout(10000);
@@ -17,6 +14,9 @@ describe ('BrainKey', function () {
 		let brainKeyWithStubClient;
 
 		before (() => {
+			const virgilCrypto = createVirgilCrypto();
+			const virgilPythia = new VirgilPythia();
+
 			const clientStub = {
 				generateSeed: sinon.stub().callsFake(({ blindedPassword, brainKeyId }) => {
 					const transformationKeyId = Buffer.from(data.kTransformationKeyId);
@@ -37,20 +37,18 @@ describe ('BrainKey', function () {
 				})
 			};
 
-			const accessTokenSigner = new VirgilAccessTokenSigner(virgilCrypto);
-			const apiKey = virgilCrypto.importPrivateKey(process.env.VIRGIL_API_KEY);
 			const generator = new JwtGenerator({
-				apiKey,
+				apiKey: virgilCrypto.importPrivateKey(process.env.VIRGIL_API_KEY),
 				apiKeyId: process.env.VIRGIL_API_KEY_ID,
 				appId: process.env.VIRGIL_APP_ID,
-				accessTokenSigner,
-				millisecondsToLive: 1000 * 60
+				accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+				millisecondsToLive: 1000 * 60 * 60
 			});
 
 			brainKeyWithStubClient = new BrainKey({
 				accessTokenProvider: new GeneratorJwtProvider(generator, undefined, 'pythia_user_' + Date.now()),
 				client: clientStub,
-				pythiaCrypto: new VirgilPythiaCrypto(virgilCrypto)
+				pythiaCrypto: new VirgilPythiaCrypto(virgilCrypto, new VirgilPythia())
 			});
 		});
 
@@ -86,10 +84,21 @@ describe ('BrainKey', function () {
 
 		let brainKey, keyPair1Identifier;
 		before(() => {
-			brainKey = createBrainKey({
-				apiKeyBase64: process.env.VIRGIL_API_KEY,
+			const virgilCrypto = createVirgilCrypto();
+			const virgilPythia = new VirgilPythia();
+			const generator = new JwtGenerator({
+				apiKey: virgilCrypto.importPrivateKey(process.env.VIRGIL_API_KEY),
 				apiKeyId: process.env.VIRGIL_API_KEY_ID,
 				appId: process.env.VIRGIL_APP_ID,
+				accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+				millisecondsToLive: 1000 * 60 * 60
+			});
+			const accessTokenProvider = new GeneratorJwtProvider(generator, undefined, 'pythia_user_' + Date.now());
+
+			brainKey = createBrainKey({
+				virgilCrypto,
+				virgilPythia,
+				accessTokenProvider,
 				apiUrl: process.env.VIRGIL_API_URL
 			});
 

@@ -12,10 +12,10 @@ export class BrainKey {
 	 *
 	 * @param client - The service client.
 	 * @param accessTokenProvider - The access token provider.
-	 * @param keyPairType - Type of key pair to generate.
 	 * @param pythiaCrypto - Crypto operations provider.
+	 * @param keyPairType - Type of key pair to generate.
 	 */
-	constructor ({ client, accessTokenProvider, keyPairType, pythiaCrypto  }) {
+	constructor ({ client, accessTokenProvider, pythiaCrypto, keyPairType }) {
 		this.client = client;
 		this.accessTokenProvider = accessTokenProvider;
 		this.keyPairType = keyPairType;
@@ -53,6 +53,11 @@ export class BrainKey {
 	}
 }
 
-function makeTokenContext() {
-	return { service: 'pythia', operation: 'seed', forceReload: false };
+export function makeTokenContext () {
+	return {
+		service: 'pythia',
+		operation: 'seed',
+		forceReload: false
+	};
 }
+

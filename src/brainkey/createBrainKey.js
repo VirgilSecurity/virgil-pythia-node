@@ -1,41 +1,46 @@
-import {
-	createVirgilCrypto,
-	VirgilAccessTokenSigner,
-	KeyPairType
-} from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
-import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 import { PythiaClient } from '../client/PythiaClient';
 import { VirgilPythiaCrypto } from '../crypto/VirgilPythiaCrypto';
 import { BrainKey } from './BrainKey';
 
-const PYTHIA_CLIENT_IDENTITY = 'PYTHIA-CLIENT';
-const ONE_HOUR = 60 * 60 * 1000;
-
 /**
  * Factory function to create instances of {@link BrainKey} class.
  *
- * @param params - Dependencies needed for `BrainKey`.
+ * @param {Object} params - Dependencies needed for `BrainKey`.
+ * @param {VirgilCrypto} params.virgilCrypto - Instance of `VirgilCrypto`
+ * class form `virgil-crypto` module.
+ * @param {VirgilPythia} params.virgilPythia - Instance of `VirgilPythia`
+ * class form `virgil-crypto` module.
+ * @param {IAccessTokenProvider} params.accessTokenProvider - Object implementing
+ * the `IAccessTokenProvider` interface form `virgil-sdk` module.
+ * @param {string} [params.keyPairType] - Type of keys to generate. For available
+ * options see `KeyPairType` enum in `virgil-crypto` module. Optional. The
+ * recommended type is used by default.
  *
  * @returns {BrainKey}
  */
 export function createBrainKey(params) {
-	const { apiKeyBase64, apiKeyId, appId, apiUrl, keyPairType = KeyPairType.Default } = params;
+	const {
+		virgilCrypto,
+		virgilPythia,
+		accessTokenProvider,
+		keyPairType,
+		apiUrl
+	} = params;
 
-	const crypto = createVirgilCrypto();
-	const accessTokenSigner = new VirgilAccessTokenSigner(crypto);
-	const apiKey = crypto.importPrivateKey(apiKeyBase64);
-	const generator = new JwtGenerator({
-		apiKey,
-		apiKeyId,
-		appId,
-		accessTokenSigner,
-		millisecondsToLive: ONE_HOUR
-	});
+	requiredArg(virgilCrypto, 'virgilCrypto');
+	requiredArg(virgilPythia, 'virgilPythia');
+	requiredArg(accessTokenProvider, 'accessTokenProvider');
 
 	return new BrainKey({
 		keyPairType,
-		accessTokenProvider: new GeneratorJwtProvider(generator, undefined, PYTHIA_CLIENT_IDENTITY),
+		accessTokenProvider: accessTokenProvider,
 		client: new PythiaClient(apiUrl),
-		pythiaCrypto: new VirgilPythiaCrypto(crypto)
+		pythiaCrypto: new VirgilPythiaCrypto(virgilCrypto, virgilPythia)
 	});
+}
+
+function requiredArg(arg, argName) {
+	if (arg == null) {
+		throw new Error(`Invalid BrainKey parameters. "${argName}" is required.`);
+	}
 }
