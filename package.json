@@ -15,7 +15,7 @@
     "rollup:umd": "rollup -c config/rollup.config.umd.js",
     "rollup": "npm-run-all --parallel rollup:*",
     "clean": "rimraf dist",
-    "minify": "uglifyjs dist/virgil-pythia.umd.js -o dist/virgil-pythia.umd.min.js -c -m",
+    "minify": "uglifyjs dist/virgil-pythia.browser.umd.js -o dist/virgil-pythia.browser.umd.min.js -c -m",
     "build": "npm-run-all clean rollup minify",
     "test:node": "BABEL_ENV=test mocha --require babel-register --require dotenv/config --require chai/register-assert \"src/tests/**/*.test.js\"",
     "test:browser": "karma start",
