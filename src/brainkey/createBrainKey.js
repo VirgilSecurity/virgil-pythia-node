@@ -1,38 +1,37 @@
-import { ProofKeys } from './ProofKeys';
-import { Pythia } from './Pythia';
 import { PythiaClient } from '../client/PythiaClient';
+import { BrainKey } from './BrainKey';
 
 /**
- * Factory function used to create instances of {@link Pythia} class.
- * @param {Object} params - Dependencies needed for `Pythia`.
+ * Factory function to create instances of {@link BrainKey} class.
+ *
+ * @param {Object} params - Dependencies needed for `BrainKey`.
  * @param {VirgilCrypto} params.virgilCrypto - Instance of `VirgilCrypto`
  * class from `virgil-crypto` module.
  * @param {VirgilPythiaCrypto} params.virgilPythiaCrypto - Instance of `VirgilPythiaCrypto`
  * class from `virgil-crypto` module.
  * @param {IAccessTokenProvider} params.accessTokenProvider - Object implementing
  * the `IAccessTokenProvider` interface from `virgil-sdk` module.
- * @param {string|string[]} params.proofKeys - The proof key or an array of proof keys in
- * string format. The format must be the following:
- * 		`'PK.{version}.{base64-encoded-data}'`
+ * @param {string} [params.keyPairType] - Type of keys to generate. For available
+ * options see `KeyPairType` enum in `virgil-crypto` module. Optional. The
+ * recommended type is used by default.
  *
- * @returns {Pythia}
+ * @returns {BrainKey}
  */
-export function createPythia(params) {
+export function createBrainKey(params) {
 	const {
 		virgilCrypto,
 		virgilPythiaCrypto,
 		accessTokenProvider,
-		proofKeys,
+		keyPairType,
 		apiUrl
 	} = params;
 
 	requiredArg(virgilCrypto, 'virgilCrypto');
 	requiredArg(virgilPythiaCrypto, 'virgilPythiaCrypto');
 	requiredArg(accessTokenProvider, 'accessTokenProvider');
-	requiredArg(proofKeys, 'proofKeys');
 
-	return new Pythia({
-		proofKeys: new ProofKeys(proofKeys),
+	return new BrainKey({
+		keyPairType,
 		accessTokenProvider: accessTokenProvider,
 		client: new PythiaClient(apiUrl),
 		virgilCrypto,
@@ -42,6 +41,6 @@ export function createPythia(params) {
 
 function requiredArg(arg, argName) {
 	if (arg == null) {
-		throw new Error(`Invalid Pythia parameters. "${argName}" is required.`);
+		throw new Error(`Invalid BrainKey parameters. "${argName}" is required.`);
 	}
 }
