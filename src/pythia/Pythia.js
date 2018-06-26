@@ -2,6 +2,11 @@ import { BreachProofPassword } from './BreachProofPassword';
 import { constantTimeEqual } from '../utils/constantTimeEqual';
 
 /**
+ * @hidden
+ */
+const SALT_BYTE_LENGTH = 32;
+
+/**
  * Class responsible generation, verification and updating of breach-proof passwords.
  *
  * `Pythia` instances are not meant to be created directly using the `new` keyword,
@@ -14,11 +19,12 @@ export class Pythia {
 	 * @param params - Pythia configuration.
 	 */
 	constructor(params) {
-		const { proofKeys, accessTokenProvider, client, pythiaCrypto } = params;
+		const { proofKeys, accessTokenProvider, client, virgilCrypto, virgilPythiaCrypto } = params;
 		this.proofKeys = proofKeys;
 		this.accessTokenProvider = accessTokenProvider;
 		this.client = client;
-		this.pythiaCrypto = pythiaCrypto;
+		this.virgilCrypto = virgilCrypto;
+		this.virgilPythiaCrypto = virgilPythiaCrypto;
 	}
 
 	/**
@@ -35,7 +41,7 @@ export class Pythia {
 	 * breach-proof password, otherwise `false`.
 	 */
 	verifyBreachProofPassword(password, breachProofPassword, includeProof) {
-		const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
+		const { blindedPassword, blindingSecret } = this.virgilPythiaCrypto.blind(password);
 		const proofKey = this.proofKeys.proofKey(breachProofPassword.version);
 
 		return this.accessTokenProvider.getToken(makeTokenContext()).then(accessToken =>
@@ -48,7 +54,7 @@ export class Pythia {
 			})
 		).then(({ transformedPassword, proof }) => {
 			if (includeProof) {
-				const verified = this.pythiaCrypto.verify({
+				const verified = this.virgilPythiaCrypto.verify({
 					transformedPassword,
 					blindedPassword,
 					tweak: breachProofPassword.salt,
@@ -62,7 +68,7 @@ export class Pythia {
 				}
 			}
 
-			const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
+			const deblindedPassword = this.virgilPythiaCrypto.deblind({ transformedPassword, blindingSecret });
 			return constantTimeEqual(deblindedPassword, breachProofPassword.deblindedPassword);
 		});
 	}
@@ -75,8 +81,8 @@ export class Pythia {
 	 * @returns {Promise<BreachProofPassword>}
 	 */
 	createBreachProofPassword(password) {
-		const salt = this.pythiaCrypto.generateSalt();
-		const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
+		const salt = this.virgilCrypto.getRandomBytes(SALT_BYTE_LENGTH);
+		const { blindedPassword, blindingSecret } = this.virgilPythiaCrypto.blind(password);
 		const latestProofKey = this.proofKeys.currentKey();
 
 		return this.accessTokenProvider.getToken(makeTokenContext()).then(accessToken =>
@@ -88,7 +94,7 @@ export class Pythia {
 				token: accessToken.toString()
 			})
 		).then(({ transformedPassword, proof }) => {
-			const verified = this.pythiaCrypto.verify({
+			const verified = this.virgilPythiaCrypto.verify({
 				transformedPassword,
 				blindedPassword,
 				tweak: salt,
@@ -101,7 +107,7 @@ export class Pythia {
 				throw new Error('Transformed password verification has failed');
 			}
 
-			const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
+			const deblindedPassword = this.virgilPythiaCrypto.deblind({ transformedPassword, blindingSecret });
 			return new BreachProofPassword(salt, deblindedPassword, latestProofKey.version);
 		});
 	}
@@ -127,7 +133,7 @@ export class Pythia {
 			)
 		}
 
-		const newDeblindedPassword = this.pythiaCrypto.updateDeblinded({
+		const newDeblindedPassword = this.virgilPythiaCrypto.updateDeblindedWithToken({
 			deblindedPassword: breachProofPassword.deblindedPassword,
 			updateToken: token
 		});

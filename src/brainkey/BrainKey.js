@@ -15,11 +15,12 @@ export class BrainKey {
 	 * @param pythiaCrypto - Crypto operations provider.
 	 * @param keyPairType - Type of key pair to generate.
 	 */
-	constructor ({ client, accessTokenProvider, pythiaCrypto, keyPairType }) {
+	constructor ({ client, accessTokenProvider, virgilCrypto, virgilPythiaCrypto, keyPairType }) {
 		this.client = client;
 		this.accessTokenProvider = accessTokenProvider;
 		this.keyPairType = keyPairType;
-		this.pythiaCrypto = pythiaCrypto;
+		this.virgilCrypto = virgilCrypto;
+		this.virgilPythiaCrypto = virgilPythiaCrypto;
 	}
 
 	/**
@@ -33,7 +34,7 @@ export class BrainKey {
 	 * @returns {Promise<{ privateKey: IPrivateKey, publicKey: IPublicKey }>}
 	 */
 	generateKeyPair (password, brainKeyId) {
-		const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
+		const { blindedPassword, blindingSecret } = this.virgilPythiaCrypto.blind(password);
 		return this.accessTokenProvider.getToken(makeTokenContext()).then(accessToken =>
 			this.client.generateSeed({
 				blindedPassword,
@@ -41,14 +42,11 @@ export class BrainKey {
 				token: accessToken.toString()
 			})
 		).then(seed => {
-			const deblindedPassword = this.pythiaCrypto.deblind({
+			const deblindedPassword = this.virgilPythiaCrypto.deblind({
 				transformedPassword: seed,
 				blindingSecret
 			});
-			return this.pythiaCrypto.generateKeyPair({
-				seed: deblindedPassword,
-				type: this.keyPairType
-			});
+			return this.virgilCrypto.generateKeysFromKeyMaterial(deblindedPassword, this.keyPairType);
 		});
 	}
 }

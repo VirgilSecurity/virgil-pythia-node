@@ -1,5 +1,4 @@
 import { PythiaClient } from '../client/PythiaClient';
-import { VirgilPythiaCrypto } from '../crypto/VirgilPythiaCrypto';
 import { BrainKey } from './BrainKey';
 
 /**
@@ -7,11 +6,11 @@ import { BrainKey } from './BrainKey';
  *
  * @param {Object} params - Dependencies needed for `BrainKey`.
  * @param {VirgilCrypto} params.virgilCrypto - Instance of `VirgilCrypto`
- * class form `virgil-crypto` module.
- * @param {VirgilPythia} params.virgilPythia - Instance of `VirgilPythia`
- * class form `virgil-crypto` module.
+ * class from `virgil-crypto` module.
+ * @param {VirgilPythiaCrypto} params.virgilPythiaCrypto - Instance of `VirgilPythiaCrypto`
+ * class from `virgil-crypto` module.
  * @param {IAccessTokenProvider} params.accessTokenProvider - Object implementing
- * the `IAccessTokenProvider` interface form `virgil-sdk` module.
+ * the `IAccessTokenProvider` interface from `virgil-sdk` module.
  * @param {string} [params.keyPairType] - Type of keys to generate. For available
  * options see `KeyPairType` enum in `virgil-crypto` module. Optional. The
  * recommended type is used by default.
@@ -21,21 +20,22 @@ import { BrainKey } from './BrainKey';
 export function createBrainKey(params) {
 	const {
 		virgilCrypto,
-		virgilPythia,
+		virgilPythiaCrypto,
 		accessTokenProvider,
 		keyPairType,
 		apiUrl
 	} = params;
 
 	requiredArg(virgilCrypto, 'virgilCrypto');
-	requiredArg(virgilPythia, 'virgilPythia');
+	requiredArg(virgilPythiaCrypto, 'virgilPythiaCrypto');
 	requiredArg(accessTokenProvider, 'accessTokenProvider');
 
 	return new BrainKey({
 		keyPairType,
 		accessTokenProvider: accessTokenProvider,
 		client: new PythiaClient(apiUrl),
-		pythiaCrypto: new VirgilPythiaCrypto(virgilCrypto, virgilPythia)
+		virgilCrypto,
+		virgilPythiaCrypto
 	});
 }
 

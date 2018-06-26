@@ -1,4 +1,8 @@
-import { createVirgilCrypto, VirgilPythia, VirgilAccessTokenSigner } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
+import {
+	VirgilCrypto,
+	VirgilPythiaCrypto,
+	VirgilAccessTokenSigner
+} from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 import { sleep } from './utils/sleep';
 import { createPythia } from '../pythia/createPythia';
@@ -12,8 +16,8 @@ describe ('Pythia', function () {
 
 	let pythia;
 	beforeEach(() => {
-		const virgilCrypto = createVirgilCrypto();
-		const virgilPythia = new VirgilPythia();
+		const virgilCrypto = new VirgilCrypto();
+		const virgilPythiaCrypto = new VirgilPythiaCrypto();
 		const jwtGenerator = new JwtGenerator({
 			apiKey: virgilCrypto.importPrivateKey(process.env.VIRGIL_API_KEY),
 			apiKeyId: process.env.VIRGIL_API_KEY_ID,
@@ -24,7 +28,7 @@ describe ('Pythia', function () {
 
 		pythia = createPythia({
 			virgilCrypto,
-			virgilPythia,
+			virgilPythiaCrypto,
 			accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
 			proofKeys: proofKeyList[0], // use only the first key
 			apiUrl: process.env.VIRGIL_API_URL
@@ -94,8 +98,8 @@ describe ('Pythia', function () {
 		});
 
 		it ('updates breach-proof password with update token', () => {
-			const virgilCrypto = createVirgilCrypto();
-			const virgilPythia = new VirgilPythia();
+			const virgilCrypto = new VirgilCrypto();
+			const virgilPythiaCrypto = new VirgilPythiaCrypto();
 			const jwtGenerator = new JwtGenerator({
 				apiKey: virgilCrypto.importPrivateKey(process.env.VIRGIL_API_KEY),
 				apiKeyId: process.env.VIRGIL_API_KEY_ID,
@@ -106,7 +110,7 @@ describe ('Pythia', function () {
 
 			const updatedPythia = createPythia({
 				virgilCrypto,
-				virgilPythia,
+				virgilPythiaCrypto,
 				accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
 				proofKeys: proofKeyList, // use two keys
 				apiUrl: process.env.VIRGIL_API_URL
@@ -126,8 +130,8 @@ describe ('Pythia', function () {
 		let updatedPythia, updatedBreachProofPassword;
 
 		before(() => {
-			const virgilCrypto = createVirgilCrypto();
-			const virgilPythia = new VirgilPythia();
+			const virgilCrypto = new VirgilCrypto();
+			const virgilPythiaCrypto = new VirgilPythiaCrypto();
 			const jwtGenerator = new JwtGenerator({
 				apiKey: virgilCrypto.importPrivateKey(process.env.VIRGIL_API_KEY),
 				apiKeyId: process.env.VIRGIL_API_KEY_ID,
@@ -138,7 +142,7 @@ describe ('Pythia', function () {
 
 			updatedPythia = createPythia({
 				virgilCrypto,
-				virgilPythia,
+				virgilPythiaCrypto,
 				accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
 				proofKeys: proofKeyList, // use two keys
 				apiUrl: process.env.VIRGIL_API_URL
