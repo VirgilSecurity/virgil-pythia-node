@@ -45,6 +45,7 @@ npm install --save virgil-crypto@next virgil-sdk@next
 ### Configure SDK
 
 The library needs the following information from your Virgil Dashboard][_dashboard] account:
+
 | Parameter | Description | Purpose |
 | --- | --- | --- |
 | API_KEY_ID | Id of the API Key | Used for JWT generation |
