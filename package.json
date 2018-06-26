@@ -1,6 +1,6 @@
 {
   "name": "virgil-pythia",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Virgil Pythia Service Client",
   "main": "dist/virgil-pythia.cjs.js",
   "module": "dist/virgil-pythia.es.js",
