@@ -1,10 +1,25 @@
 {
-	"presets": [
-		["babel-preset-env", {
-			"modules": "commonjs",
-			"targets": {
-				"node": "6"
-			}
-		}]
-	]
+	"env": {
+		"development": {
+			"presets": [
+				["babel-preset-env", {
+					"modules": false,
+					"targets": {
+						"node": "6",
+						"browsers": "> 1%"
+					}
+				}]
+			],
+			"plugins": [ "external-helpers" ]
+		},
+
+		"test": {
+			"presets": [
+				["babel-preset-env", {
+					"modules": "commonjs"
+				}]
+			],
+			"plugins": []
+		}
+	}
 }

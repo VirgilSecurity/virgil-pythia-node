@@ -6,48 +6,83 @@
 
 ## Introduction
 
-<a href="https://developer.virgilsecurity.com/docs"><img width="230px" src="https://cdn.virgilsecurity.com/assets/images/github/logos/virgil-logo-red.png" align="left" hspace="10" vspace="6"></a>[Virgil Security](https://virgilsecurity.com) provides an SDK which lets you implement Pythia protocol.
-Pythia is a technology that gives you a new, more secure mechanism that "breach-proofs" user passwords and lessens the security risks associated with weak passwords by providing cryptographic leverage for the defender (by eliminating offline password cracking attacks), detection for online attacks, and key rotation to recover from stolen password databases.
+<a href="https://developer.virgilsecurity.com/docs"><img width="230px" src="https://cdn.virgilsecurity.com/assets/images/github/logos/virgil-logo-red.png" align="left" hspace="10" vspace="6"></a>
+[Virgil Security](https://virgilsecurity.com) provides an SDK which allows you to communicate with Virgil Pythia Service
+and implement Pythia protocol for the following use cases:.
+
+* *Breach-proof password*. Pythia is a technology that gives you a new, more secure mechanism that "breach-proofs" user
+passwords and lessens the security risks associated with weak passwords by providing cryptographic leverage for the
+defender (by eliminating offline password cracking attacks), detection for online attacks, and key rotation to recover
+from stolen password databases.
+* *BrainKey*. User's Private Key which is based on user's password. BrainKey can be easily restored and is resistant to
+online and offline attacks.
+
+In both cases you get the mechanism which assures you that neither Virgil nor attackers know anything about user's
+password.
 
 ## SDK Features
 - communicate with Virgil Pythia Service
 - manage your Pythia application credentials
 - create, verify and update user's breach-proof password
+- generate user's BrainKey
 - use [Virgil Crypto Pythia library][_virgil_crypto_pythia]
 
 ## Install and configure SDK
 
 The Virgil Pythia Node.js SDK is provided as a package named virgil-pythia. The package is distributed via npm.
-The package is available for Node.js 6 or newer.
+The package is compatible with Node.js 6 or newer.
 
 Install Pythia SDK with the following code:
 ```bash
 npm install --save virgil-pythia
 ```
 
+You will also need to install the `virgil-crypto` and `virgil-sdk` packages separately:
+```bash
+npm install --save virgil-crypto@next virgil-sdk@next
+```
+
 ### Configure SDK
 
-When you create a Pythia Application on the [Virgil Dashboard][_dashboard] you will receive Application credentials including: Proof Key and App ID. Specify your Pythia Application and Virgil account credentials in a Pythia SDK class instance.
-These credentials are used for the following purposes:
-- generating a JWT token that is used for authorization on the Virgil Services
-- creating a user's breach-proof password
+The library needs the following information from your Virgil Dashboard][_dashboard] account:
+| Parameter | Description | Purpose |
+| --- | --- | --- |
+| API_KEY_ID | Id of the API Key | Used for JWT generation |
+| API_KEY | The private key of the API Key | Used for JWT generation |
+| APP_ID | Id of the Pythia App | Used for JWT generation |
+| PROOF_KEY | The Proof Key of the Pythia App | Used to verify the cryptographic proof that transformed password returned form service is correct |
 
-Here is an example of how to specify your credentials:
+Here is an example of how to configure the library for work with Virgil Pythia Service:
 
 ```javascript
+
+import { VirgilCrypto, VirgilPythiaCrypto, VirgilAccessTokenSigner } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
+import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 import { createPythia } from 'virgil-pythia';
 
-const pythia = createPythia({
-	apiKeyBase64: process.env.VIRGIL_API_KEY,
-	apiKeyId: process.env.VIRGIL_API_KEY_ID,
-	appId: process.env.VIRGIL_APP_ID,
-	proofKeys: process.env.MY_PROOF_KEY
+const virgilCrypto = new VirgilCrypto();
+const virgilPythiaCrypto = new VirgilPythiaCrypto();
+
+const jwtGenerator = new Virgil.JwtGenerator({
+	apiKey: virgilCrypto.importPrivateKey(process.env.API_KEY),
+	apiKeyId: process.env.API_KEY_ID,
+	appId: process.env.APP_ID,
+	accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto)
+});
+
+const pythia = VirgilPythia.createPythia({
+	virgilCrypto,
+	virgilPythiaCrypto,
+	accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
+	proofKeys: [
+		process.env.PROOF_KEY
+	]
 });
 ```
 
 ## Usage Examples
 
-Virgil Pythia SDK lets you easily create, verify and update user's breach-proof password using Virgil Crypto library.
+Virgil Pythia SDK lets you create, verify and update user's breach-proof password using Virgil Crypto library.
 
 First of all, you need to set up your database to store users' breach-proof passwords. Create additional columns in your database for storing the following parameters:
 <table class="params">
@@ -85,7 +120,8 @@ First of all, you need to set up your database to store users' breach-proof pass
 </tbody>
 </table>
 
-Now we can start creating breach-proof passwords for users. Depending on the situation, you will use one of the following Pythia SDK functions:
+Now we can start creating breach-proof passwords for users. Depending on the situation, you will use one of the
+following Pythia SDK functions:
 - `createBreachProofPassword` is used to create a user's breach-proof password (e.g. during registration).
 - `verifyBreachProofPassword` is used to verify a user's breach-proof password (e.g. during authentication).
 
@@ -93,12 +129,14 @@ Now we can start creating breach-proof passwords for users. Depending on the sit
 
 Use this flow to create a new breach-proof password for a user.
 
-> Remember, if you already have a database with user passwords, you don't have to wait until a user logs in into your system to implement Pythia.
+> Remember, if you already have a database with user passwords, you don't have to wait until a user logs in into your
+system to implement Pythia.
 You can go through your database and create breach-proof user passwords at any time.
 
 So, in order to create a user's breach-proof password for a new database or existing one, take the following actions:
 - Take a user's password (or its hash or whatever you use) and pass it into the `createBreachProofPassword` function.
-- Pythia SDK will blind the password, send a request to Pythia Service to get a transformed blinded password and de-blind the transformed blinded password into a user's deblinded password (breach-proof password).
+- Pythia SDK will blind the password, send a request to Pythia Service to get a transformed blinded password and
+de-blind the transformed blinded password into a user's deblinded password (breach-proof password).
 
 ```javascript
 // create a new Breach-proof password using user's password or its hash
@@ -111,10 +149,12 @@ pythia.createBreachProofPassword('USER_PASSWORD')
 	});
 ```
 
-The result of calling `createBreachProofPassword` is an object containing parameters mentioned previously (`salt`, `deblindedPassword`, `version`),
+The result of calling `createBreachProofPassword` is an object containing parameters mentioned previously (`salt`,
+`deblindedPassword`, `version`),
 save these parameters into corresponding columns in your database.
 
-Check that you've updated all database records and delete the now unnecessary column where users' passwords were previously stored.
+Check that you've updated all database records and delete the now unnecessary column where users' passwords were
+previously stored.
 
 ### Verify Breach-Proof Password
 
@@ -169,12 +209,79 @@ console.log(updatedBpPassword.deblindedPassword.toString('base64'));
 console.log(updatedBpPassword.version);
 ```
 
+### BrainKey
+
+*PYTHIA* Service can be used directly as a means to generate strong cryptographic keys based on user's **password**.
+We call these keys the **BrainKeys**. Thus when you need to restore a Private Key you use only user's Password and
+Pythia Service.
+
+#### Generate BrainKey
+
+Use this flow to generate a new BrainKey for a user.
+
+In order to create a user's BrainKey, go through the following operations:
+- Register your E2EE application on [Virgil Dashboard][_dashboard] and get your app credentials
+- Generate your API key or use available
+- Set up **JWT provider** using previously mentioned parameters (**App ID, API key, API key ID**) on the Server side
+- Generate JWT token with **user's identity** inside and transmit it to Client side (user's side)
+- On Client side set up **access token provider** to call out to your backend to get the JWT.
+- Setup BrainKey function with access token provider and pass user's password
+- Send BrainKey request to Pythia Service
+- Generate keypair based on BrainKey that you've got from Pythia Service and create user's Card
+- Pass user's Card to cardManager
+- Publish user's Card that is related to the BrainKey
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<script src="https://unpkg.com/virgil-crypto@next/dist/virgil-crypto-pythia.browser.umd.min.js"></script>
+	<script src="https://unpkg.com/virgil-sdk@next/dist/virgil-sdk.browser.umd.min.js"></script>
+	<script src="https://unpkg.com/virgil-pythia/dist/virgil-pythia.browser.umd.min.js"></script>
+</head>
+<body>
+<script>
+	const fetchJwt = (context) => fetch('/virgil-access-token').then(response => {
+		if (!response.ok) {
+		  throw new Error('Failed to get Virgil access token');
+		}
+		return response.text();
+	});
+
+	const virgilCrypto = new VirgilCrypto.VirgilCrypto();
+	const virgilPythiaCrypto = new VirgilCrypto.VirgilPythiaCrypto();
+	const virgilCardCrypto = new VirgilCardCrypto(virgilCrypto);
+
+	const jwtProvider = new Virgil.CachingJwtProvider(fetchJwt);
+	const cardManager = new Virgil.CardManager({
+		cardCrypto: virgilCardCrypto,
+		accessTokenProvider: jwtProvider,
+		cardVerifier: new Virgil.VirgilCardVerifier(virgilCardCrypto)
+	});
+
+	const brainKey = VirgilPythia.createBrainKey({
+		virgilCrypto,
+		virgilPythiaCrypto,
+		accessTokenProvider: jwtProvider
+	});
+
+	brainKey.generateKeyPair('my_password')
+		.then(keyPair => cardManager.publishCard(keyPair))
+		.then(card => console.log('Published card', card));
+		.catch(err => console.log(err));
+</script>
+</body>
+</html>
+```
+
 ## Docs
 Virgil Security has a powerful set of APIs, and the documentation below can get you started today.
 
 * [Breach-Proof Password][_pythia_use_case] Use Case
 * [The Pythia PRF Service](https://eprint.iacr.org/2015/644.pdf) - foundation principles of the protocol
-* [Virgil Security Documenation][_documentation]
+* [Virgil Security Documentation][_documentation]
 
 ## License
 

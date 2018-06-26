@@ -1,5 +1,12 @@
-import { default as fetch, Headers } from 'node-fetch';
+import { default as fetch, Headers } from 'cross-fetch';
+import { PythiaClientError } from './PythiaClientError';
 
+/**
+ * Class responsible for sending HTTP requests to
+ * Virgil Pythia service.
+ *
+ * @hidden
+ */
 export class Connection {
 	constructor (baseUrl) {
 		this.baseUrl = baseUrl;
@@ -7,7 +14,17 @@ export class Connection {
 
 	send (url, opts) {
 		opts = normalizeOptions(opts);
-		return fetch(this.baseUrl + url, opts);
+		return fetch(this.baseUrl + url, opts).then(response => {
+			if (!response.ok) {
+				return response.json().then(reason => {
+					const message = reason.message || response.statusText;
+					throw new PythiaClientError(message, reason.code, response.status);
+				});
+
+			}
+
+			return response.json();
+		});
 	}
 }
 
