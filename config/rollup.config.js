@@ -3,6 +3,8 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import inject from 'rollup-plugin-inject';
 import globals from 'rollup-plugin-node-globals';
+import builtinModules from 'builtin-modules';
+import pkg from '../package.json';
 
 export default ({ output, isBrowser, ...config }) => ({
 	input: 'src/index.js',
@@ -30,5 +32,6 @@ export default ({ output, isBrowser, ...config }) => ({
 	treeshake: {
 		pureExternalModules: true
 	},
+	external: isBrowser ? [] : [ ...builtinModules, ...Object.keys(pkg.dependencies) ],
 	...config
 });
