@@ -1,5 +1,9 @@
 import { BreachProofPassword } from './BreachProofPassword';
 import { constantTimeEqual } from '../utils/constantTimeEqual';
+import {
+	ProofVerificationFailedError,
+	UnexpectedBreachProofPasswordVersionError
+} from '../errors/errors';
 
 /**
  * @hidden
@@ -64,7 +68,7 @@ export class Pythia {
 				});
 
 				if (!verified) {
-					throw new Error('Transformed password verification has failed');
+					throw new ProofVerificationFailedError();
 				}
 			}
 
@@ -104,7 +108,7 @@ export class Pythia {
 			});
 
 			if (!verified) {
-				throw new Error('Transformed password verification has failed');
+				throw new ProofVerificationFailedError();
 			}
 
 			const deblindedPassword = this.virgilPythiaCrypto.deblind({ transformedPassword, blindingSecret });
@@ -123,14 +127,12 @@ export class Pythia {
 	 */
 	updateBreachProofPassword(updateToken, breachProofPassword) {
 		const { prevVersion, nextVersion, token } = parseUpdateToken(updateToken);
-		if (breachProofPassword.version === nextVersion) {
-			throw new Error('Breach-proof password has already been migrated');
-		}
 
 		if (breachProofPassword.version !== prevVersion) {
-			throw new Error(
-				`Breach-proof password version is wrong. Expected ${prevVersion}, got ${breachProofPassword.version}`
-			)
+			throw new UnexpectedBreachProofPasswordVersionError(
+				prevVersion,
+				breachProofPassword.version
+			);
 		}
 
 		const newDeblindedPassword = this.virgilPythiaCrypto.updateDeblindedWithToken({

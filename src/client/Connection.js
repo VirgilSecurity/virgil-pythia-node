@@ -1,5 +1,5 @@
 import { default as fetch, Headers } from 'cross-fetch';
-import { PythiaClientError } from './PythiaClientError';
+import { PythiaClientError } from '../errors/errors';
 
 /**
  * Class responsible for sending HTTP requests to
