@@ -29,17 +29,17 @@ password.
 
 ## Install and configure SDK
 
-The Virgil Pythia Node.js SDK is provided as a package named virgil-pythia. The package is distributed via npm.
-The package is compatible with Node.js 6 or newer.
+The Virgil Pythia Node.js SDK is provided as npm package named `virgil-pythia`.
+This package is compatible with Node.js 6 or newer.
 
 Install Pythia SDK with the following code:
 ```bash
-npm install --save virgil-pythia
+npm install virgil-pythia
 ```
 
 You will also need to install the `virgil-crypto` and `virgil-sdk` packages separately:
 ```bash
-npm install --save virgil-crypto@next virgil-sdk@next
+npm install virgil-crypto virgil-sdk
 ```
 
 ### Configure SDK
@@ -238,8 +238,8 @@ In order to create a user's BrainKey, go through the following operations:
 <head>
 	<meta charset="UTF-8">
 	<title>Title</title>
-	<script src="https://unpkg.com/virgil-crypto@next/dist/virgil-crypto-pythia.browser.umd.min.js"></script>
-	<script src="https://unpkg.com/virgil-sdk@next/dist/virgil-sdk.browser.umd.min.js"></script>
+	<script src="https://unpkg.com/virgil-crypto/dist/virgil-crypto-pythia.browser.umd.min.js"></script>
+	<script src="https://unpkg.com/virgil-sdk/dist/virgil-sdk.browser.umd.min.js"></script>
 	<script src="https://unpkg.com/virgil-pythia/dist/virgil-pythia.browser.umd.min.js"></script>
 </head>
 <body>
