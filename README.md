@@ -1,4 +1,6 @@
 # Virgil Pythia Node.js SDK
+[![npm](https://img.shields.io/npm/v/virgil-pythia.svg)](https://www.npmjs.com/package/virgil-pythia)
+[![Build Status](https://travis-ci.com/VirgilSecurity/virgil-pythia-node.svg?branch=master)](https://travis-ci.com/VirgilSecurity/virgil-pythia-node)
 [![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://github.com/VirgilSecurity/virgil/blob/master/LICENSE)
 
 
