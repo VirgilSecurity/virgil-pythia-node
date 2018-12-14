@@ -1,6 +1,6 @@
 {
   "name": "virgil-pythia",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Virgil Pythia Service Client",
   "main": "dist/virgil-pythia.cjs.js",
   "module": "dist/virgil-pythia.es.js",
@@ -28,7 +28,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VirgilSecurity/pythia-node.git"
+    "url": "git+https://github.com/VirgilSecurity/virgil-pythia-node.git"
   },
   "keywords": [
     "pythia"
@@ -36,9 +36,9 @@
   "author": "Virgil Security Inc. <support@virgilsecurity.com>",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/VirgilSecurity/pythia-node/issues"
+    "url": "https://github.com/VirgilSecurity/virgil-pythia-node/issues"
   },
-  "homepage": "https://github.com/VirgilSecurity/pythia-node#readme",
+  "homepage": "https://github.com/VirgilSecurity/virgil-pythia-node#readme",
   "dependencies": {
     "cross-fetch": "^2.2.2"
   },
@@ -77,11 +77,11 @@
     "rollup-plugin-replace": "^2.0.0",
     "sinon": "^4.5.0",
     "uglify-js": "^3.4.5",
-    "virgil-crypto": "^3.0.0",
-    "virgil-sdk": "^5.0.0"
+    "virgil-crypto": "^3.2.0",
+    "virgil-sdk": "^5.2.0"
   },
   "peerDependencies": {
-    "virgil-crypto": "^3.0.0",
-    "virgil-sdk": "^5.0.0"
+    "virgil-crypto": "3.x",
+    "virgil-sdk": "5.x"
   }
 }
