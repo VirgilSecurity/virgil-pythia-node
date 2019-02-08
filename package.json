@@ -77,8 +77,8 @@
     "rollup-plugin-replace": "^2.0.0",
     "sinon": "^4.5.0",
     "uglify-js": "^3.4.5",
-    "virgil-crypto": "^3.2.0",
-    "virgil-sdk": "^5.2.0"
+    "virgil-crypto": "^3.2.1",
+    "virgil-sdk": "^5.2.2"
   },
   "peerDependencies": {
     "virgil-crypto": "3.x",
