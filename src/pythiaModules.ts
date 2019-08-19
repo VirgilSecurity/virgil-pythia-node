@@ -1,4 +1,4 @@
-import { PythiaModules } from '@virgilsecurity/core-pythia';
+import { PythiaModules } from './types';
 
 let pythiaModules: PythiaModules | undefined;
 

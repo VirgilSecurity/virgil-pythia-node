@@ -4,6 +4,9 @@ export enum StringEncoding {
   hex = 'hex',
 }
 
+export type PythiaModules = import('@virgilsecurity/core-pythia').PythiaModules;
+
+export type VirgilCrypto = import('virgil-crypto').VirgilCrypto;
 export type Data = import('virgil-crypto').Data;
 export type IPrivateKey = import('virgil-crypto').IPrivateKey;
 export type IPublicKey = import('virgil-crypto').IPublicKey;

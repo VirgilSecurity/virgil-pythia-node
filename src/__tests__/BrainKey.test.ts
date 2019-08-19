@@ -2,7 +2,7 @@ import { Buffer as NodeBuffer } from 'buffer';
 import { expect } from 'chai';
 import uuid from 'uuid/v4';
 
-import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner, VirgilKeyPair } from 'virgil-crypto';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
 import { BrainKey, initPythia, PythiaClient, PythiaCrypto } from '../index';
@@ -33,17 +33,47 @@ describe('BrainKey', () => {
     brainKey = new BrainKey(pythiaCrypto, pythiaClient);
   });
 
+  describe('create', () => {
+    it('returns an instance of `BrainKey`', () => {
+      const virgilCrypto = new VirgilCrypto();
+      const jwtGenerator = new JwtGenerator({
+        apiKey: virgilCrypto.importPrivateKey({
+          value: process.env.VIRGIL_API_KEY!,
+          encoding: 'base64',
+        }),
+        apiKeyId: process.env.VIRGIL_API_KEY_ID!,
+        appId: process.env.VIRGIL_APP_ID!,
+        accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+      });
+      const generatorJwtProvider = new GeneratorJwtProvider(jwtGenerator, undefined, uuid());
+      const myBrainKey = BrainKey.create(virgilCrypto, generatorJwtProvider);
+      expect(myBrainKey).to.be.instanceOf(BrainKey);
+    });
+  });
+
   describe('generateKeyPair', () => {
     it('generates key pair properly', async () => {
       const password1 = 'password1';
       const password2 = 'password2';
-      const keyPair1 = await brainKey.generateKeyPair({ value: password1, encoding: 'utf8' });
+      const keyPair1 = (await brainKey.generateKeyPair({
+        value: password1,
+        encoding: 'utf8',
+      })) as VirgilKeyPair;
       await sleep(RATE_LIMIT);
-      const keyPair2 = await brainKey.generateKeyPair({ value: password1, encoding: 'utf8' });
+      const keyPair2 = (await brainKey.generateKeyPair({
+        value: password1,
+        encoding: 'utf8',
+      })) as VirgilKeyPair;
       await sleep(RATE_LIMIT);
-      const keyPair3 = await brainKey.generateKeyPair({ value: password2, encoding: 'utf8' });
+      const keyPair3 = (await brainKey.generateKeyPair({
+        value: password2,
+        encoding: 'utf8',
+      })) as VirgilKeyPair;
       await sleep(RATE_LIMIT);
-      const keyPair4 = await brainKey.generateKeyPair({ value: password2, encoding: 'utf8' }, 'id');
+      const keyPair4 = (await brainKey.generateKeyPair(
+        { value: password2, encoding: 'utf8' },
+        'id',
+      )) as VirgilKeyPair;
       await sleep(RATE_LIMIT);
       expect(NodeBuffer.from(keyPair1.publicKey.identifier).equals(keyPair2.publicKey.identifier))
         .to.be.true;

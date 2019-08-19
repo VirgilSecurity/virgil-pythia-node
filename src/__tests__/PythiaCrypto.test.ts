@@ -69,4 +69,16 @@ describe('PythiaCrypto', () => {
       expect(publicKey1.equals(publicKey2)).to.be.true;
     });
   });
+
+  describe('updateDeblindedWithToken', () => {
+    it('works', () => {
+      expect(true).to.be.true;
+    });
+  });
+
+  describe('verify', () => {
+    it('works', () => {
+      expect(true).to.be.true;
+    });
+  });
 });

@@ -1,8 +1,6 @@
-import { VirgilCrypto } from 'virgil-crypto';
-
 import { IPythiaCrypto } from './IPythiaCrypto';
 import { getPythiaModules } from './pythiaModules';
-import { Data } from './types';
+import { VirgilCrypto, Data } from './types';
 import { dataToUint8Array, toBuffer } from './utils';
 
 export class PythiaCrypto implements IPythiaCrypto {
@@ -36,5 +34,38 @@ export class PythiaCrypto implements IPythiaCrypto {
   generateKeyPair(seed: Data) {
     const mySeed = dataToUint8Array(seed, 'base64');
     return this.virgilCrypto.generateKeysFromKeyMaterial(mySeed);
+  }
+
+  updateDeblindedWithToken(deblindedPassword: Data, passwordUpdateToken: Data) {
+    const { Pythia } = getPythiaModules();
+    const myDeblindedPassword = dataToUint8Array(deblindedPassword, 'base64');
+    const myPasswordUpdateToken = dataToUint8Array(passwordUpdateToken, 'base64');
+    const result = Pythia.updateDeblindedWithToken(myDeblindedPassword, myPasswordUpdateToken);
+    return toBuffer(result);
+  }
+
+  verify(
+    transformedPassword: Data,
+    blindedPassword: Data,
+    tweak: Data,
+    transformationPublicKey: Data,
+    proofValueC: Data,
+    proofValueU: Data,
+  ) {
+    const { Pythia } = getPythiaModules();
+    const myTransformedPassword = dataToUint8Array(transformedPassword, 'base64');
+    const myBlindedPassword = dataToUint8Array(blindedPassword, 'base64');
+    const myTweak = dataToUint8Array(tweak, 'base64');
+    const myTransformationPublicKey = dataToUint8Array(transformationPublicKey, 'base64');
+    const myProofValueC = dataToUint8Array(proofValueC, 'base64');
+    const myProofValueU = dataToUint8Array(proofValueU, 'base64');
+    return Pythia.verify(
+      myTransformedPassword,
+      myBlindedPassword,
+      myTweak,
+      myTransformationPublicKey,
+      myProofValueC,
+      myProofValueU,
+    );
   }
 }
