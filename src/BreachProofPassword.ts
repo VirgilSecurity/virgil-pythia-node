@@ -1,13 +1,15 @@
-import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
+import { Buffer as NodeBuffer, dataToUint8Array } from '@virgilsecurity/data-utils';
+
+import { Data } from './types';
 
 export class BreachProofPassword {
   readonly salt: Uint8Array;
   readonly deblindedPassword: Uint8Array;
   readonly version: number;
 
-  constructor(salt: Uint8Array, deblindedPassword: Uint8Array, version: number) {
-    this.salt = salt;
-    this.deblindedPassword = deblindedPassword;
+  constructor(salt: Data, deblindedPassword: Data, version: number) {
+    this.salt = dataToUint8Array(salt, 'base64');
+    this.deblindedPassword = dataToUint8Array(deblindedPassword, 'base64');
     this.version = version;
   }
 

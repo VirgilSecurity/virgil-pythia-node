@@ -1,4 +1,4 @@
-import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
+import { Buffer as NodeBuffer, dataToUint8Array } from '@virgilsecurity/data-utils';
 
 import { BreachProofPassword } from './BreachProofPassword';
 import { IPythiaClient } from './IPythiaClient';
@@ -6,7 +6,7 @@ import { IPythiaCrypto } from './IPythiaCrypto';
 import { ProofKeys } from './ProofKeys';
 import { PythiaClient } from './PythiaClient';
 import { PythiaCrypto } from './PythiaCrypto';
-import { VirgilCrypto, IAccessTokenProvider } from './types';
+import { Data, VirgilCrypto, IAccessTokenProvider } from './types';
 import { constantTimeEqual } from './utils';
 
 export class Pythia {
@@ -43,11 +43,11 @@ export class Pythia {
   }
 
   async verifyBreachProofPassword(
-    password: string,
+    password: Data,
     breachProofPassword: BreachProofPassword,
     includeProof?: boolean,
   ) {
-    const myPassword = NodeBuffer.from(password, 'utf8');
+    const myPassword = dataToUint8Array(password, 'utf8');
     const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(myPassword);
     const proofKey = this.proofKeys.proofKey(breachProofPassword.version);
     const { transformedPassword, proof } = await this.pythiaClient.transformPassword({
@@ -75,9 +75,9 @@ export class Pythia {
     return constantTimeEqual(deblindedPassword, breachProofPassword.deblindedPassword);
   }
 
-  async createBreachProofPassword(password: string) {
+  async createBreachProofPassword(password: Data) {
     const salt = this.virgilCrypto.getRandomBytes(Pythia.SALT_BYTE_LENGTH);
-    const myPassword = NodeBuffer.from(password, 'utf8');
+    const myPassword = dataToUint8Array(password, 'utf8');
     const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(myPassword);
     const latestProofKey = this.proofKeys.currentKey();
     const { transformedPassword, proof } = await this.pythiaClient.transformPassword({
