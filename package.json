@@ -17,7 +17,12 @@
   "license": "BSD-3-Clause",
   "scripts": {
     "lint": "eslint 'src/**/*.ts'",
-    "test": "mocha -t 0 -r ts-node/register -r dotenv/config src/**/*.test.ts"
+    "test": "mocha -t 0 -r ts-node/register -r dotenv/config src/**/*.test.ts",
+    "build:rollup": "rollup -c",
+    "build:wasm": "node wasm.js",
+    "build": "npm run build:rollup && npm run build:wasm",
+    "clean": "rimraf .rpt2_cache dist",
+    "prepare": "npm run clean && npm run build"
   },
   "dependencies": {
     "@virgilsecurity/core-pythia": "^0.1.0",
@@ -41,6 +46,13 @@
     "eslint-plugin-prettier": "^3.1.0",
     "mocha": "^6.1.4",
     "prettier": "^1.18.2",
+    "rimraf": "^2.6.3",
+    "rollup": "^1.14.6",
+    "rollup-plugin-commonjs": "^10.0.2",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-re": "^1.0.7",
+    "rollup-plugin-terser": "^5.1.1",
+    "rollup-plugin-typescript2": "^0.21.1",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.1",
     "uuid": "^3.3.2",
