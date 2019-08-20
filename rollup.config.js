@@ -63,7 +63,7 @@ const createUmdEntry = (pythiaLibrary, outputFilename) => ({
         },
       ],
     }),
-    nodeResolve({ browser: true, preferBuiltins: false }),
+    nodeResolve({ browser: true }),
     commonjs(),
     typescript({
       exclude: ['**/*.test.ts'],
