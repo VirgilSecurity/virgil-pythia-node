@@ -1,9 +1,10 @@
+import { dataToUint8Array } from '@virgilsecurity/data-utils';
+
 import { IPythiaClient } from './IPythiaClient';
 import { IPythiaCrypto } from './IPythiaCrypto';
 import { PythiaClient } from './PythiaClient';
 import { PythiaCrypto } from './PythiaCrypto';
 import { VirgilCrypto, Data, IAccessTokenProvider } from './types';
-import { dataToUint8Array } from './utils';
 
 export class BrainKey {
   private readonly pythiaCrypto: IPythiaCrypto;

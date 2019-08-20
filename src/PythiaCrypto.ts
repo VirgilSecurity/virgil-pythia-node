@@ -1,7 +1,8 @@
+import { dataToUint8Array, toBuffer } from '@virgilsecurity/data-utils';
+
 import { IPythiaCrypto } from './IPythiaCrypto';
 import { getPythiaModules } from './pythiaModules';
 import { VirgilCrypto, Data } from './types';
-import { dataToUint8Array, toBuffer } from './utils';
 
 export class PythiaCrypto implements IPythiaCrypto {
   private readonly virgilCrypto: VirgilCrypto;

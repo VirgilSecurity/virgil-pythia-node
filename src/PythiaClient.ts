@@ -1,5 +1,5 @@
+import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
 import axios from 'axios';
-import { Buffer as NodeBuffer } from 'buffer';
 
 import { IPythiaClient, TransformPasswordResult } from './IPythiaClient';
 import { IAccessTokenProvider } from './types';

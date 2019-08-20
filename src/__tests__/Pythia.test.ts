@@ -1,4 +1,4 @@
-import { Buffer as NodeBuffer } from 'buffer';
+import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
 import { expect } from 'chai';
 import uuid from 'uuid/v4';
 
