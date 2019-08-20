@@ -31,22 +31,19 @@ password.
 
 ## Install and configure SDK
 
-The Virgil Pythia Node.js SDK is provided as npm package named `virgil-pythia`.
-This package is compatible with Node.js 6 or newer.
-
 Install Pythia SDK with the following code:
 ```bash
-npm install virgil-pythia
+npm install virgil-pythia@next
 ```
 
 You will also need to install the `virgil-crypto` and `virgil-sdk` packages separately:
 ```bash
-npm install virgil-crypto virgil-sdk
+npm install virgil-crypto@next virgil-sdk
 ```
 
 ### Configure SDK
 
-The library needs the following information from your Virgil Dashboard][_dashboard] account:
+The library needs the following information from your [Virgil Dashboard][_dashboard] account:
 
 | Parameter | Description | Purpose |
 | --- | --- | --- |
@@ -59,28 +56,27 @@ Here is an example of how to configure the library for work with Virgil Pythia S
 
 ```javascript
 
-import { VirgilCrypto, VirgilPythiaCrypto, VirgilAccessTokenSigner } from 'virgil-crypto/dist/virgil-crypto-pythia.cjs';
+import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
+import { initPythia, Pythia } from 'virgil-pythia';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
-import { createPythia } from 'virgil-pythia';
 
-const virgilCrypto = new VirgilCrypto();
-const virgilPythiaCrypto = new VirgilPythiaCrypto();
-
-const jwtGenerator = new Virgil.JwtGenerator({
-	apiKey: virgilCrypto.importPrivateKey(process.env.API_KEY),
-	apiKeyId: process.env.API_KEY_ID,
-	appId: process.env.APP_ID,
-	accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto)
-});
-
-const pythia = VirgilPythia.createPythia({
-	virgilCrypto,
-	virgilPythiaCrypto,
-	accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
-	proofKeys: [
-		process.env.PROOF_KEY
-	]
-});
+Promise.all([initCrypto, initPythia])
+  .then(() => {
+    const virgilCrypto = new VirgilCrypto();
+    const jwtGenerator = new Virgil.JwtGenerator({
+    	apiKey: virgilCrypto.importPrivateKey(process.env.API_KEY),
+    	apiKeyId: process.env.API_KEY_ID,
+    	appId: process.env.APP_ID,
+    	accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+    });
+    const pythia = Pythia.create({
+    	virgilCrypto,
+    	accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
+    	proofKeys: [
+    		process.env.PROOF_KEY,
+    	],
+    });
+  });
 ```
 
 ## Usage Examples
@@ -146,9 +142,9 @@ de-blind the transformed blinded password into a user's deblinded password (brea
 pythia.createBreachProofPassword('USER_PASSWORD')
 	.then(bpPassword => {
 		// save the breach-proof password parameters into your database
-        console.log(bpPassword.salt.toString('base64')); // salt is a Buffer
-        console.log(bpPassword.deblindedPassword.toString('base64')); // deblindedPassword is a Buffer
-        console.log(bpPassword.version);
+    console.log(bpPassword.salt.toString('base64')); // salt is a Buffer
+    console.log(bpPassword.deblindedPassword.toString('base64')); // deblindedPassword is a Buffer
+    console.log(bpPassword.version);
 	});
 ```
 
@@ -234,9 +230,9 @@ In order to create a user's BrainKey, go through the following operations:
 <head>
 	<meta charset="UTF-8">
 	<title>Title</title>
-	<script src="https://unpkg.com/virgil-crypto/dist/virgil-crypto-pythia.browser.umd.min.js"></script>
-	<script src="https://unpkg.com/virgil-sdk/dist/virgil-sdk.browser.umd.min.js"></script>
-	<script src="https://unpkg.com/virgil-pythia/dist/virgil-pythia.browser.umd.min.js"></script>
+	<script type="text/javascript" src="https://unpkg.com/virgil-crypto@next/dist/browser.umd.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/virgil-pythia@next/dist/browser.umd.js"></script>
+	<script type="text/javascript" src="https://unpkg.com/virgil-sdk/dist/virgil-sdk.browser.umd.min.js"></script>
 </head>
 <body>
 <script>
@@ -247,29 +243,19 @@ In order to create a user's BrainKey, go through the following operations:
 		return response.text();
 	});
 
-	const virgilCrypto = new VirgilCrypto.VirgilCrypto();
-	const virgilPythiaCrypto = new VirgilCrypto.VirgilPythiaCrypto();
-	const virgilCardCrypto = new VirgilCardCrypto(virgilCrypto);
+  Promise.all([VirgilCrypto.initCrypto, VirgilPythia.initPythia])
+    .then(() => {
+      const virgilCrypto = new VirgilCrypto.VirgilCrypto();
+    	const jwtProvider = new Virgil.CachingJwtProvider(fetchJwt);
+    	const brainKey = VirgilPythia.BrainKey.create(virgilCrypto, jwtProvider);
 
-	const jwtProvider = new Virgil.CachingJwtProvider(fetchJwt);
-	const cardManager = new Virgil.CardManager({
-		cardCrypto: virgilCardCrypto,
-		accessTokenProvider: jwtProvider,
-		cardVerifier: new Virgil.VirgilCardVerifier(virgilCardCrypto)
-	});
-
-	const brainKey = VirgilPythia.createBrainKey({
-		virgilCrypto,
-		virgilPythiaCrypto,
-		accessTokenProvider: jwtProvider
-	});
-
-	// Generate default public/private keypair which is Curve ED25519
-	// If you need to generate several BrainKeys for the same password, use different IDs.
-	brainKey.generateKeyPair('your password', 'optional_id')
-		.then(keyPair => {
-		console.log(keyPair);
-		});
+    	// Generate default public/private keypair which is ED25519
+    	// If you need to generate several BrainKeys for the same password, use different IDs.
+    	brainKey.generateKeyPair('your password', 'optional_id')
+    		.then(keyPair => {
+          console.log(keyPair);
+    		});
+    });
 </script>
 </body>
 </html>
@@ -294,10 +280,10 @@ Important notes for implementation:
 
 ```javascript
 ...
-    brainKey.generateKeyPair('abcdef13803488', 'optional_user_ssn')
-		.then(keyPair => {
-		console.log(keyPair);
-		});
+brainKey.generateKeyPair('abcdef13803488', 'optional_user_ssn')
+	.then(keyPair => {
+    console.log(keyPair);
+	});
 ...
 ```
 > Note! if you don't need to use additional parameters, like "Optional User SSN", you can just omit it: `brainKey.generateKeyPair('abcdef13803488')`
