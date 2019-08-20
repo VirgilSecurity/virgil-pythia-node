@@ -1,3 +1,5 @@
+> This README is for virgil-pythia v0.3.x. Check the [v0.2.7](https://github.com/VirgilSecurity/virgil-pythia-node/tree/v0.2.7) branch for virgil-pythia docs.
+
 # Virgil Pythia Node.js SDK
 [![npm](https://img.shields.io/npm/v/virgil-pythia.svg)](https://www.npmjs.com/package/virgil-pythia)
 [![Build Status](https://travis-ci.com/VirgilSecurity/virgil-pythia-node.svg?branch=master)](https://travis-ci.com/VirgilSecurity/virgil-pythia-node)
