@@ -12,8 +12,7 @@ describe('BrainKey', () => {
   let brainKey: BrainKey;
 
   before(async () => {
-    await initCrypto();
-    await initPythia();
+    await Promise.all([initCrypto(), initPythia()]);
   });
 
   beforeEach(() => {

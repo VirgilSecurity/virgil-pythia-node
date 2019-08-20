@@ -12,8 +12,7 @@ describe('PythiaCrypto', () => {
   let pythiaCrypto: PythiaCrypto;
 
   before(async () => {
-    await initCrypto();
-    await initPythia();
+    await Promise.all([initCrypto(), initPythia()]);
   });
 
   beforeEach(() => {
