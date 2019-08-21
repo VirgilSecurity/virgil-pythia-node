@@ -65,7 +65,7 @@ import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 Promise.all([initCrypto(), initPythia()])
   .then(() => {
     const virgilCrypto = new VirgilCrypto();
-    const jwtGenerator = new Virgil.JwtGenerator({
+    const jwtGenerator = new JwtGenerator({
       apiKey: virgilCrypto.importPrivateKey(process.env.API_KEY),
       apiKeyId: process.env.API_KEY_ID,
       appId: process.env.APP_ID,

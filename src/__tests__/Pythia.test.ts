@@ -7,7 +7,7 @@ import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
 import { BreachProofPassword, initPythia, Pythia, PythiaClient, PythiaCrypto } from '../index';
 import { ProofKeys } from '../ProofKeys';
-import { PYTHIA_RATE_LIMIT, RATE_LIMIT, sleep } from './utils';
+import { RATE_LIMIT, sleep } from './utils';
 
 describe('Pythia', () => {
   let pythia: Pythia;
@@ -63,7 +63,7 @@ describe('Pythia', () => {
 
   describe('Registration', () => {
     beforeEach(async () => {
-      await sleep(PYTHIA_RATE_LIMIT);
+      await sleep(RATE_LIMIT);
     });
 
     it('creates new breach-proof password', async () => {
