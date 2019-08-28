@@ -1,10 +1,8 @@
-import { dataToUint8Array } from '@virgilsecurity/data-utils';
-
 import { IPythiaClient } from './IPythiaClient';
 import { IPythiaCrypto } from './IPythiaCrypto';
 import { PythiaClient } from './PythiaClient';
 import { PythiaCrypto } from './PythiaCrypto';
-import { VirgilCrypto, Data, IAccessTokenProvider } from './types';
+import { ICrypto, Data, IAccessTokenProvider } from './types';
 
 export class BrainKey {
   private readonly pythiaCrypto: IPythiaCrypto;
@@ -21,15 +19,14 @@ export class BrainKey {
     this.pythiaClient = pythiaClient;
   }
 
-  static create(virgilCrypto: VirgilCrypto, accessTokenProvider: IAccessTokenProvider) {
-    const pythiaCrypto = new PythiaCrypto(virgilCrypto);
+  static create(crypto: ICrypto, accessTokenProvider: IAccessTokenProvider) {
+    const pythiaCrypto = new PythiaCrypto(crypto);
     const pythiaClient = new PythiaClient(accessTokenProvider);
     return new BrainKey(pythiaCrypto, pythiaClient);
   }
 
   async generateKeyPair(password: Data, brainKeyId?: string) {
-    const myPassword = dataToUint8Array(password, 'utf8');
-    const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(myPassword);
+    const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
     const seed = await this.pythiaClient.generateSeed(blindedPassword, brainKeyId);
     const deblindedPassword = this.pythiaCrypto.deblind(seed, blindingSecret);
     return this.pythiaCrypto.generateKeyPair(deblindedPassword);

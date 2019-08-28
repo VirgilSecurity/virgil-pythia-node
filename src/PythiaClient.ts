@@ -32,10 +32,10 @@ export class PythiaClient implements IPythiaClient {
     this.axios = axios.create({ baseURL: apiUrl || PythiaClient.DEFAULT_URL });
   }
 
-  async generateSeed(blindedPassword: Uint8Array, brainKeyId?: string) {
+  async generateSeed(blindedPassword: Buffer, brainKeyId?: string) {
     const body: GenerateSeedRequestBody = {
       // eslint-disable-next-line @typescript-eslint/camelcase
-      blinded_password: NodeBuffer.from(blindedPassword).toString('base64'),
+      blinded_password: blindedPassword.toString('base64'),
     };
     if (brainKeyId) {
       // eslint-disable-next-line @typescript-eslint/camelcase
@@ -56,16 +56,16 @@ export class PythiaClient implements IPythiaClient {
   }
 
   async transformPassword(options: {
-    blindedPassword: Uint8Array;
-    salt: Uint8Array;
+    blindedPassword: Buffer;
+    salt: Buffer;
     version?: number;
     includeProof?: boolean;
   }) {
     const body: TransformPasswordRequestBody = {
       // eslint-disable-next-line @typescript-eslint/camelcase
-      blinded_password: NodeBuffer.from(options.blindedPassword).toString('base64'),
+      blinded_password: options.blindedPassword.toString('base64'),
       // eslint-disable-next-line @typescript-eslint/camelcase
-      user_id: NodeBuffer.from(options.salt).toString('base64'),
+      user_id: options.salt.toString('base64'),
     };
     if (typeof options.version === 'number' && !Number.isNaN(options.version)) {
       body.version = options.version;

@@ -2,16 +2,16 @@ import { dataToUint8Array, toBuffer } from '@virgilsecurity/data-utils';
 
 import { IPythiaCrypto } from './IPythiaCrypto';
 import { getPythiaModules } from './pythiaModules';
-import { VirgilCrypto, Data } from './types';
+import { ICrypto, Data } from './types';
 
 export class PythiaCrypto implements IPythiaCrypto {
-  private readonly virgilCrypto: VirgilCrypto;
+  private readonly crypto: ICrypto;
 
-  constructor(virgilCrypto: VirgilCrypto) {
-    if (virgilCrypto == null) {
-      throw new Error('`virgilCrypto` is required');
+  constructor(crypto: ICrypto) {
+    if (crypto == null) {
+      throw new Error('`crypto` is required');
     }
-    this.virgilCrypto = virgilCrypto;
+    this.crypto = crypto;
   }
 
   blind(password: Data) {
@@ -34,7 +34,7 @@ export class PythiaCrypto implements IPythiaCrypto {
 
   generateKeyPair(seed: Data) {
     const mySeed = dataToUint8Array(seed, 'base64');
-    return this.virgilCrypto.generateKeysFromKeyMaterial(mySeed);
+    return this.crypto.generateKeysFromKeyMaterial(mySeed);
   }
 
   updateDeblindedWithToken(deblindedPassword: Data, passwordUpdateToken: Data) {

@@ -33,7 +33,7 @@ describe('Pythia', () => {
     pythia = new Pythia({
       pythiaClient,
       pythiaCrypto,
-      virgilCrypto,
+      crypto: virgilCrypto,
       proofKeys: new ProofKeys(process.env.MY_PROOF_KEYS!.split(';')[0]),
     });
   });
@@ -54,7 +54,7 @@ describe('Pythia', () => {
       const proofKeys = process.env.MY_PROOF_KEYS!.split(';');
       const myPythia = Pythia.create({
         proofKeys,
-        virgilCrypto,
+        crypto: virgilCrypto,
         accessTokenProvider: generatorJwtProvider,
       });
       expect(myPythia).to.be.instanceOf(Pythia);
@@ -144,7 +144,7 @@ describe('Pythia', () => {
       updatedPythia = new Pythia({
         pythiaClient,
         pythiaCrypto,
-        virgilCrypto,
+        crypto: virgilCrypto,
         proofKeys: new ProofKeys(process.env.MY_PROOF_KEYS!.split(';')),
       });
       breachProofPassword = await pythia.createBreachProofPassword(password);
@@ -219,7 +219,7 @@ describe('Pythia', () => {
       updatedPythia = new Pythia({
         pythiaClient,
         pythiaCrypto,
-        virgilCrypto,
+        crypto: virgilCrypto,
         proofKeys: new ProofKeys(process.env.MY_PROOF_KEYS!.split(';')),
       });
       originalBreachProofPassword = await pythia.createBreachProofPassword(password);

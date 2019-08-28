@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import uuid from 'uuid/v4';
 
-import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner, VirgilKeyPair } from 'virgil-crypto';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
 import { initPythia, PythiaClient, PythiaCrypto } from '../index';
@@ -58,8 +58,8 @@ describe('PythiaCrypto', () => {
   describe('generateKeyPair', () => {
     it('generates key pair properly', () => {
       const seed = virgilCrypto.getRandomBytes(32);
-      const keyPair1 = pythiaCrypto.generateKeyPair(seed);
-      const keyPair2 = pythiaCrypto.generateKeyPair(seed);
+      const keyPair1 = pythiaCrypto.generateKeyPair(seed) as VirgilKeyPair;
+      const keyPair2 = pythiaCrypto.generateKeyPair(seed) as VirgilKeyPair;
       const privateKey1 = virgilCrypto.exportPrivateKey(keyPair1.privateKey);
       const publicKey1 = virgilCrypto.exportPublicKey(keyPair1.publicKey);
       const privateKey2 = virgilCrypto.exportPrivateKey(keyPair2.privateKey);

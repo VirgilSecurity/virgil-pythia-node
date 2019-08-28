@@ -1,17 +1,19 @@
+/// <reference types="node" />
+
 export interface TransformPasswordResult {
-  transformedPassword: Uint8Array;
+  transformedPassword: Buffer;
   proof?: {
-    valueC: Uint8Array;
-    valueU: Uint8Array;
+    valueC: Buffer;
+    valueU: Buffer;
   };
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IPythiaClient {
-  generateSeed(blindedPassword: Uint8Array, brainKeyId?: string): Promise<Uint8Array>;
+  generateSeed(blindedPassword: Buffer, brainKeyId?: string): Promise<Buffer>;
   transformPassword(options: {
-    blindedPassword: Uint8Array;
-    salt: Uint8Array;
+    blindedPassword: Buffer;
+    salt: Buffer;
     version?: number;
     includeProof?: boolean;
   }): Promise<TransformPasswordResult>;

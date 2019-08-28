@@ -6,38 +6,38 @@ import { IPythiaCrypto } from './IPythiaCrypto';
 import { ProofKeys } from './ProofKeys';
 import { PythiaClient } from './PythiaClient';
 import { PythiaCrypto } from './PythiaCrypto';
-import { Data, VirgilCrypto, IAccessTokenProvider } from './types';
+import { ICrypto, Data, IAccessTokenProvider } from './types';
 import { constantTimeEqual } from './utils';
 
 export class Pythia {
   static SALT_BYTE_LENGTH = 32;
 
+  private readonly crypto: ICrypto;
   private readonly proofKeys: ProofKeys;
   private readonly pythiaClient: IPythiaClient;
   private readonly pythiaCrypto: IPythiaCrypto;
-  private readonly virgilCrypto: VirgilCrypto;
 
   constructor(options: {
+    crypto: ICrypto;
     proofKeys: ProofKeys;
     pythiaClient: IPythiaClient;
     pythiaCrypto: IPythiaCrypto;
-    virgilCrypto: VirgilCrypto;
   }) {
+    this.crypto = options.crypto;
     this.proofKeys = options.proofKeys;
     this.pythiaClient = options.pythiaClient;
     this.pythiaCrypto = options.pythiaCrypto;
-    this.virgilCrypto = options.virgilCrypto;
   }
 
   static create(options: {
-    virgilCrypto: VirgilCrypto;
+    crypto: ICrypto;
     accessTokenProvider: IAccessTokenProvider;
     proofKeys: string | string[];
   }) {
     return new Pythia({
-      virgilCrypto: options.virgilCrypto,
+      crypto: options.crypto,
       pythiaClient: new PythiaClient(options.accessTokenProvider),
-      pythiaCrypto: new PythiaCrypto(options.virgilCrypto),
+      pythiaCrypto: new PythiaCrypto(options.crypto),
       proofKeys: new ProofKeys(options.proofKeys),
     });
   }
@@ -76,7 +76,7 @@ export class Pythia {
   }
 
   async createBreachProofPassword(password: Data) {
-    const salt = this.virgilCrypto.getRandomBytes(Pythia.SALT_BYTE_LENGTH);
+    const salt = this.crypto.getRandomBytes(Pythia.SALT_BYTE_LENGTH);
     const myPassword = dataToUint8Array(password, 'utf8');
     const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(myPassword);
     const latestProofKey = this.proofKeys.currentKey();
