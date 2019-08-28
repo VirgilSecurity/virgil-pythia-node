@@ -64,15 +64,15 @@ import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
 Promise.all([initCrypto(), initPythia()])
   .then(() => {
-    const virgilCrypto = new VirgilCrypto();
+    const crypto = new VirgilCrypto();
     const jwtGenerator = new JwtGenerator({
-      apiKey: virgilCrypto.importPrivateKey(process.env.API_KEY),
+      apiKey: crypto.importPrivateKey(process.env.API_KEY),
       apiKeyId: process.env.API_KEY_ID,
       appId: process.env.APP_ID,
-      accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+      accessTokenSigner: new VirgilAccessTokenSigner(crypto),
     });
     const pythia = Pythia.create({
-      virgilCrypto,
+      crypto,
       accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
       proofKeys: [
         process.env.PROOF_KEY,
