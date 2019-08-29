@@ -29,7 +29,7 @@ describe('createBrainKey', () => {
       virgilPythiaCrypto,
       accessTokenProvider,
       apiUrl: process.env.VIRGIL_API_URL!,
-    })
+    });
     expect(brainKey).to.be.instanceOf(BrainKey);
   });
 });
