@@ -59,21 +59,24 @@ Here is an example of how to configure the library for work with Virgil Pythia S
 ```javascript
 
 import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
-import { initPythia, Pythia } from 'virgil-pythia';
+import { initPythia, createPythia, PythiaCrypto } from 'virgil-pythia';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
 Promise.all([initCrypto(), initPythia()])
   .then(() => {
-    const crypto = new VirgilCrypto();
+    const virgilCrypto = new VirgilCrypto();
+    const virgilPythiaCrypto = new PythiaCrypto(virgilCrypto);
     const jwtGenerator = new JwtGenerator({
       apiKey: crypto.importPrivateKey(process.env.API_KEY),
       apiKeyId: process.env.API_KEY_ID,
       appId: process.env.APP_ID,
       accessTokenSigner: new VirgilAccessTokenSigner(crypto),
     });
-    const pythia = Pythia.create({
-      crypto,
-      accessTokenProvider: new GeneratorJwtProvider(jwtGenerator),
+    const accessTokenProvider = new GeneratorJwtProvider(jwtGenerator);
+    const pythia = createPythia({
+      virgilCrypto,
+      virgilPythiaCrypto,
+      accessTokenProvider,
       proofKeys: [
         process.env.PROOF_KEY,
       ],
@@ -248,8 +251,13 @@ In order to create a user's BrainKey, go through the following operations:
   Promise.all([VirgilCrypto.initCrypto(), VirgilPythia.initPythia()])
     .then(() => {
       const virgilCrypto = new VirgilCrypto.VirgilCrypto();
-      const jwtProvider = new Virgil.CachingJwtProvider(fetchJwt);
-      const brainKey = VirgilPythia.BrainKey.create(virgilCrypto, jwtProvider);
+      const virgilPythiaCrypto = new VirgilPythia.PythiaCrypto(virgilCrypto);
+      const accessTokenProvider = new Virgil.CachingJwtProvider(fetchJwt);
+      const brainKey = VirgilPythia.createBrainKey({
+        virgilCrypto,
+        virgilPythiaCrypto,
+        accessTokenProvider,
+      });
 
       // Generate default public/private keypair which is ED25519
       // If you need to generate several BrainKeys for the same password, use different IDs.
