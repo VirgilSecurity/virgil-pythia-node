@@ -1,4 +1,4 @@
-import { Buffer as NodeBuffer, dataToUint8Array } from '@virgilsecurity/data-utils';
+import { NodeBuffer, dataToUint8Array } from '@virgilsecurity/data-utils';
 
 import { BreachProofPassword } from './BreachProofPassword';
 import { IPythiaClient } from './IPythiaClient';

@@ -1,11 +1,11 @@
-/// <reference types="node" />
+import { NodeBuffer } from './types';
 
 export class BreachProofPassword {
-  readonly salt: Buffer;
-  readonly deblindedPassword: Buffer;
+  readonly salt: NodeBuffer;
+  readonly deblindedPassword: NodeBuffer;
   readonly version: number;
 
-  constructor(salt: Buffer, deblindedPassword: Buffer, version: number) {
+  constructor(salt: NodeBuffer, deblindedPassword: NodeBuffer, version: number) {
     this.salt = salt;
     this.deblindedPassword = deblindedPassword;
     this.version = version;

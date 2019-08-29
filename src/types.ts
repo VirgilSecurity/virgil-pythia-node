@@ -1,5 +1,6 @@
 export type PythiaModules = import('@virgilsecurity/core-pythia').PythiaModules;
 
+export type NodeBuffer = import('@virgilsecurity/crypto-types').NodeBuffer;
 export type Data = import('@virgilsecurity/crypto-types').Data;
 export type ICrypto = import('@virgilsecurity/crypto-types').ICrypto;
 export type IPrivateKey = import('@virgilsecurity/crypto-types').IPrivateKey;

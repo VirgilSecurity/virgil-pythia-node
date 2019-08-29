@@ -1,19 +1,19 @@
-/// <reference types="node" />
+import { NodeBuffer } from './types';
 
 export interface TransformPasswordResult {
-  transformedPassword: Buffer;
+  transformedPassword: NodeBuffer;
   proof?: {
-    valueC: Buffer;
-    valueU: Buffer;
+    valueC: NodeBuffer;
+    valueU: NodeBuffer;
   };
 }
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IPythiaClient {
-  generateSeed(blindedPassword: Buffer, brainKeyId?: string): Promise<Buffer>;
+  generateSeed(blindedPassword: NodeBuffer, brainKeyId?: string): Promise<NodeBuffer>;
   transformPassword(options: {
-    blindedPassword: Buffer;
-    salt: Buffer;
+    blindedPassword: NodeBuffer;
+    salt: NodeBuffer;
     version?: number;
     includeProof?: boolean;
   }): Promise<TransformPasswordResult>;
