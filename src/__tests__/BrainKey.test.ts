@@ -32,24 +32,6 @@ describe('BrainKey', () => {
     brainKey = new BrainKey(pythiaCrypto, pythiaClient);
   });
 
-  describe('create', () => {
-    it('returns an instance of `BrainKey`', () => {
-      const virgilCrypto = new VirgilCrypto();
-      const jwtGenerator = new JwtGenerator({
-        apiKey: virgilCrypto.importPrivateKey({
-          value: process.env.VIRGIL_API_KEY!,
-          encoding: 'base64',
-        }),
-        apiKeyId: process.env.VIRGIL_API_KEY_ID!,
-        appId: process.env.VIRGIL_APP_ID!,
-        accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
-      });
-      const generatorJwtProvider = new GeneratorJwtProvider(jwtGenerator, undefined, uuid());
-      const myBrainKey = BrainKey.create(virgilCrypto, generatorJwtProvider);
-      expect(myBrainKey).to.be.instanceOf(BrainKey);
-    });
-  });
-
   describe('generateKeyPair', () => {
     it('generates key pair properly', async () => {
       const password1 = 'password1';

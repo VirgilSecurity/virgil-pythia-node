@@ -6,7 +6,7 @@ import { Data, IPrivateKey, IPublicKey } from './types';
 export interface IPythiaCrypto {
   blind(password: Data): { blindedPassword: NodeBuffer; blindingSecret: NodeBuffer };
   deblind(transformedPassword: Data, blindingSecret: Data): NodeBuffer;
-  generateKeyPair(seed: Data): { privateKey: IPrivateKey; publicKey: IPublicKey };
+  generateKeyPair(seed: Data, keyPairType?: unknown): { privateKey: IPrivateKey; publicKey: IPublicKey };
   updateDeblindedWithToken(deblindedPassword: Data, passwordUpdateToken: Data): NodeBuffer;
   verify(
     transformedPassword: Data,

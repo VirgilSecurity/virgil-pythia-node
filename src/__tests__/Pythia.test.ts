@@ -38,29 +38,6 @@ describe('Pythia', () => {
     });
   });
 
-  describe('create', () => {
-    it('returns an instance of `Pythia`', () => {
-      const virgilCrypto = new VirgilCrypto();
-      const jwtGenerator = new JwtGenerator({
-        apiKey: virgilCrypto.importPrivateKey({
-          value: process.env.VIRGIL_API_KEY!,
-          encoding: 'base64',
-        }),
-        apiKeyId: process.env.VIRGIL_API_KEY_ID!,
-        appId: process.env.VIRGIL_APP_ID!,
-        accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
-      });
-      const generatorJwtProvider = new GeneratorJwtProvider(jwtGenerator, undefined, uuid());
-      const proofKeys = process.env.MY_PROOF_KEYS!.split(';');
-      const myPythia = Pythia.create({
-        proofKeys,
-        crypto: virgilCrypto,
-        accessTokenProvider: generatorJwtProvider,
-      });
-      expect(myPythia).to.be.instanceOf(Pythia);
-    });
-  });
-
   describe('Registration', () => {
     beforeEach(async () => {
       await sleep(RATE_LIMIT);

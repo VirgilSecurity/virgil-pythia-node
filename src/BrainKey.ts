@@ -1,14 +1,13 @@
 import { IPythiaClient } from './IPythiaClient';
 import { IPythiaCrypto } from './IPythiaCrypto';
-import { PythiaClient } from './PythiaClient';
-import { PythiaCrypto } from './PythiaCrypto';
-import { ICrypto, Data, IAccessTokenProvider } from './types';
+import { Data } from './types';
 
 export class BrainKey {
   private readonly pythiaCrypto: IPythiaCrypto;
   private readonly pythiaClient: IPythiaClient;
+  private readonly keyPairType?: unknown;
 
-  constructor(pythiaCrypto: IPythiaCrypto, pythiaClient: IPythiaClient) {
+  constructor(pythiaCrypto: IPythiaCrypto, pythiaClient: IPythiaClient, keyPairType?: unknown) {
     if (pythiaCrypto == null) {
       throw new Error('`pythiaCrypto` is required');
     }
@@ -17,18 +16,13 @@ export class BrainKey {
     }
     this.pythiaCrypto = pythiaCrypto;
     this.pythiaClient = pythiaClient;
-  }
-
-  static create(crypto: ICrypto, accessTokenProvider: IAccessTokenProvider) {
-    const pythiaCrypto = new PythiaCrypto(crypto);
-    const pythiaClient = new PythiaClient(accessTokenProvider);
-    return new BrainKey(pythiaCrypto, pythiaClient);
+    this.keyPairType = keyPairType;
   }
 
   async generateKeyPair(password: Data, brainKeyId?: string) {
     const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
     const seed = await this.pythiaClient.generateSeed(blindedPassword, brainKeyId);
     const deblindedPassword = this.pythiaCrypto.deblind(seed, blindingSecret);
-    return this.pythiaCrypto.generateKeyPair(deblindedPassword);
+    return this.pythiaCrypto.generateKeyPair(deblindedPassword, this.keyPairType);
   }
 }
