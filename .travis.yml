@@ -1,17 +1,9 @@
 language: node_js
 node_js:
-    - "6"
-    - "8"
-    - "10"
-dist: trusty # needs Ubuntu Trusty
-sudo: required
-addons:
-  chrome: stable # have Travis install chrome stable.
-cache:
-  npm: true
-  directories:
-    - node_modules
-install:
-  - npm install
+  - "8"
+  - "10"
+  - "11"
+  - "12"
 script:
-  - npm test
+  - yarn lint
+  - yarn test
