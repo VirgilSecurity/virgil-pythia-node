@@ -38,9 +38,9 @@ Install Pythia SDK with the following code:
 npm install virgil-pythia@next
 ```
 
-You will also need to install the `virgil-crypto` and `virgil-sdk` packages separately:
+You will also need to install the `virgil-crypto`, `@virgilsecurity/pythia-crypto` and `virgil-sdk` packages separately:
 ```bash
-npm install virgil-crypto@next virgil-sdk
+npm install virgil-crypto@next @virgilsecurity/pythia-crypto virgil-sdk
 ```
 
 ### Configure SDK
@@ -58,14 +58,15 @@ Here is an example of how to configure the library for work with Virgil Pythia S
 
 ```javascript
 
+import { initPythia, VirgilPythiaCrypto } from '@virgilsecurity/pythia-crypto';
 import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
-import { initPythia, createPythia, PythiaCrypto } from 'virgil-pythia';
+import { createPythia } from 'virgil-pythia';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
 Promise.all([initCrypto(), initPythia()])
   .then(() => {
     const virgilCrypto = new VirgilCrypto();
-    const virgilPythiaCrypto = new PythiaCrypto(virgilCrypto);
+    const virgilPythiaCrypto = new VirgilPythiaCrypto();
     const jwtGenerator = new JwtGenerator({
       apiKey: crypto.importPrivateKey(process.env.API_KEY),
       apiKeyId: process.env.API_KEY_ID,
@@ -235,6 +236,7 @@ In order to create a user's BrainKey, go through the following operations:
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <script type="text/javascript" src="https://unpkg.com/@virgilsecurity/pythia-crypto/dist/browser.umd.js"></script>
   <script type="text/javascript" src="https://unpkg.com/virgil-crypto@next/dist/browser.umd.js"></script>
   <script type="text/javascript" src="https://unpkg.com/virgil-pythia@next/dist/browser.umd.js"></script>
   <script type="text/javascript" src="https://unpkg.com/virgil-sdk/dist/virgil-sdk.browser.umd.min.js"></script>
@@ -248,10 +250,10 @@ In order to create a user's BrainKey, go through the following operations:
     return response.text();
   });
 
-  Promise.all([VirgilCrypto.initCrypto(), VirgilPythia.initPythia()])
+  Promise.all([VirgilCrypto.initCrypto(), VirgilPythiaCrypto.initPythia()])
     .then(() => {
       const virgilCrypto = new VirgilCrypto.VirgilCrypto();
-      const virgilPythiaCrypto = new VirgilPythia.PythiaCrypto(virgilCrypto);
+      const virgilPythiaCrypto = new VirgilPythiaCrypto.VirgilPythiaCrypto();
       const accessTokenProvider = new Virgil.CachingJwtProvider(fetchJwt);
       const brainKey = VirgilPythia.createBrainKey({
         virgilCrypto,

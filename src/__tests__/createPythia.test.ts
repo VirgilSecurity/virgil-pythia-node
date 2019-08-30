@@ -1,10 +1,11 @@
 import { expect } from 'chai';
 import uuid from 'uuid/v4';
 
+import { initPythia, VirgilPythiaCrypto } from '@virgilsecurity/pythia-crypto';
 import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
-import { createPythia, initPythia, Pythia, PythiaCrypto } from '../index';
+import { createPythia, Pythia } from '../index';
 
 describe('createPythia', () => {
   before(async () => {
@@ -13,7 +14,7 @@ describe('createPythia', () => {
 
   it('returns an instance of `Pythia`', () => {
     const virgilCrypto = new VirgilCrypto();
-    const virgilPythiaCrypto = new PythiaCrypto(virgilCrypto);
+    const virgilPythiaCrypto = new VirgilPythiaCrypto();
     const jwtGenerator = new JwtGenerator({
       apiKey: virgilCrypto.importPrivateKey({
         value: process.env.VIRGIL_API_KEY!,

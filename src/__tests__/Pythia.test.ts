@@ -2,10 +2,11 @@ import { NodeBuffer } from '@virgilsecurity/data-utils';
 import { expect } from 'chai';
 import uuid from 'uuid/v4';
 
+import { initPythia, VirgilPythiaCrypto } from '@virgilsecurity/pythia-crypto';
 import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
-import { BreachProofPassword, initPythia, Pythia, PythiaClient, PythiaCrypto } from '../index';
+import { BreachProofPassword, Pythia, PythiaClient } from '../index';
 import { ProofKeys } from '../ProofKeys';
 import { RATE_LIMIT, sleep } from './utils';
 
@@ -18,7 +19,7 @@ describe('Pythia', () => {
 
   beforeEach(() => {
     const virgilCrypto = new VirgilCrypto();
-    const pythiaCrypto = new PythiaCrypto(virgilCrypto);
+    const virgilPythiaCrypto = new VirgilPythiaCrypto();
     const jwtGenerator = new JwtGenerator({
       apiKey: virgilCrypto.importPrivateKey({
         value: process.env.VIRGIL_API_KEY!,
@@ -32,8 +33,8 @@ describe('Pythia', () => {
     const pythiaClient = new PythiaClient(generatorJwtProvider, process.env.VIRGIL_API_URL!);
     pythia = new Pythia({
       pythiaClient,
-      pythiaCrypto,
       crypto: virgilCrypto,
+      pythiaCrypto: virgilPythiaCrypto,
       proofKeys: new ProofKeys(process.env.MY_PROOF_KEYS!.split(';')[0]),
     });
   });
@@ -106,7 +107,7 @@ describe('Pythia', () => {
 
     before(async () => {
       const virgilCrypto = new VirgilCrypto();
-      const pythiaCrypto = new PythiaCrypto(virgilCrypto);
+      const virgilPythiaCrypto = new VirgilPythiaCrypto();
       const jwtGenerator = new JwtGenerator({
         apiKey: virgilCrypto.importPrivateKey({
           value: process.env.VIRGIL_API_KEY!,
@@ -120,8 +121,8 @@ describe('Pythia', () => {
       const pythiaClient = new PythiaClient(generatorJwtProvider, process.env.VIRGIL_API_URL!);
       updatedPythia = new Pythia({
         pythiaClient,
-        pythiaCrypto,
         crypto: virgilCrypto,
+        pythiaCrypto: virgilPythiaCrypto,
         proofKeys: new ProofKeys(process.env.MY_PROOF_KEYS!.split(';')),
       });
       breachProofPassword = await pythia.createBreachProofPassword(password);
@@ -181,7 +182,7 @@ describe('Pythia', () => {
 
     before(async () => {
       const virgilCrypto = new VirgilCrypto();
-      const pythiaCrypto = new PythiaCrypto(virgilCrypto);
+      const virgilPythiaCrypto = new VirgilPythiaCrypto();
       const jwtGenerator = new JwtGenerator({
         apiKey: virgilCrypto.importPrivateKey({
           value: process.env.VIRGIL_API_KEY!,
@@ -195,12 +196,12 @@ describe('Pythia', () => {
       const pythiaClient = new PythiaClient(generatorJwtProvider, process.env.VIRGIL_API_URL!);
       updatedPythia = new Pythia({
         pythiaClient,
-        pythiaCrypto,
         crypto: virgilCrypto,
+        pythiaCrypto: virgilPythiaCrypto,
         proofKeys: new ProofKeys(process.env.MY_PROOF_KEYS!.split(';')),
       });
       originalBreachProofPassword = await pythia.createBreachProofPassword(password);
-      updatedBreachProofPassword = await updatedPythia.updateBreachProofPassword(
+      updatedBreachProofPassword = updatedPythia.updateBreachProofPassword(
         process.env.MY_UPDATE_TOKEN!,
         originalBreachProofPassword,
       );

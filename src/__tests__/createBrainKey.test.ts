@@ -1,10 +1,11 @@
 import { expect } from 'chai';
 import uuid from 'uuid/v4';
 
+import { initPythia, VirgilBrainKeyCrypto } from '@virgilsecurity/pythia-crypto';
 import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
-import { BrainKey, createBrainKey, initPythia, PythiaCrypto } from '../index';
+import { BrainKey, createBrainKey } from '../index';
 
 describe('createBrainKey', () => {
   before(async () => {
@@ -13,7 +14,7 @@ describe('createBrainKey', () => {
 
   it('returns an instance of `BrainKey`', () => {
     const virgilCrypto = new VirgilCrypto();
-    const virgilPythiaCrypto = new PythiaCrypto(virgilCrypto);
+    const virgilPythiaCrypto = new VirgilBrainKeyCrypto();
     const jwtGenerator = new JwtGenerator({
       apiKey: virgilCrypto.importPrivateKey({
         value: process.env.VIRGIL_API_KEY!,

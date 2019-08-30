@@ -2,10 +2,11 @@ import { NodeBuffer } from '@virgilsecurity/data-utils';
 import { expect } from 'chai';
 import uuid from 'uuid/v4';
 
+import { initPythia, VirgilBrainKeyCrypto } from '@virgilsecurity/pythia-crypto';
 import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner, VirgilKeyPair } from 'virgil-crypto';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
-import { BrainKey, initPythia, PythiaClient, PythiaCrypto } from '../index';
+import { BrainKey, PythiaClient } from '../index';
 import { RATE_LIMIT, sleep } from './utils';
 
 describe('BrainKey', () => {
@@ -17,7 +18,7 @@ describe('BrainKey', () => {
 
   beforeEach(() => {
     const virgilCrypto = new VirgilCrypto();
-    const pythiaCrypto = new PythiaCrypto(virgilCrypto);
+    const virgilBrainKeyCrypto = new VirgilBrainKeyCrypto();
     const jwtGenerator = new JwtGenerator({
       apiKey: virgilCrypto.importPrivateKey({
         value: process.env.VIRGIL_API_KEY!,
@@ -29,7 +30,11 @@ describe('BrainKey', () => {
     });
     const generatorJwtProvider = new GeneratorJwtProvider(jwtGenerator, undefined, uuid());
     const pythiaClient = new PythiaClient(generatorJwtProvider, process.env.VIRGIL_API_URL!);
-    brainKey = new BrainKey(pythiaCrypto, pythiaClient);
+    brainKey = new BrainKey({
+      pythiaClient,
+      crypto: virgilCrypto,
+      brainKeyCrypto: virgilBrainKeyCrypto,
+    });
   });
 
   describe('generateKeyPair', () => {

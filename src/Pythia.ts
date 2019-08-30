@@ -2,11 +2,8 @@ import { NodeBuffer, dataToUint8Array } from '@virgilsecurity/data-utils';
 
 import { BreachProofPassword } from './BreachProofPassword';
 import { IPythiaClient } from './IPythiaClient';
-import { IPythiaCrypto } from './IPythiaCrypto';
 import { ProofKeys } from './ProofKeys';
-import { PythiaClient } from './PythiaClient';
-import { PythiaCrypto } from './PythiaCrypto';
-import { ICrypto, Data, IAccessTokenProvider } from './types';
+import { Data, ICrypto, IPythiaCrypto } from './types';
 import { constantTimeEqual } from './utils';
 
 export class Pythia {
@@ -29,19 +26,6 @@ export class Pythia {
     this.pythiaCrypto = options.pythiaCrypto;
   }
 
-  static create(options: {
-    crypto: ICrypto;
-    accessTokenProvider: IAccessTokenProvider;
-    proofKeys: string | string[];
-  }) {
-    return new Pythia({
-      crypto: options.crypto,
-      pythiaClient: new PythiaClient(options.accessTokenProvider),
-      pythiaCrypto: new PythiaCrypto(options.crypto),
-      proofKeys: new ProofKeys(options.proofKeys),
-    });
-  }
-
   async verifyBreachProofPassword(
     password: Data,
     breachProofPassword: BreachProofPassword,
@@ -57,21 +41,21 @@ export class Pythia {
       version: breachProofPassword.version,
     });
     if (includeProof) {
-      const verified = this.pythiaCrypto.verify(
+      const verified = this.pythiaCrypto.verify({
         transformedPassword,
         blindedPassword,
-        breachProofPassword.salt,
-        proofKey.key,
+        tweak: breachProofPassword.salt,
+        transformationPublicKey: proofKey.key,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        proof!.valueC,
+        proofValueC: proof!.valueC,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        proof!.valueU,
-      );
+        proofValueU: proof!.valueU,
+      });
       if (!verified) {
         throw new Error('Transformed password proof verification has failed');
       }
     }
-    const deblindedPassword = this.pythiaCrypto.deblind(transformedPassword, blindingSecret);
+    const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
     return constantTimeEqual(deblindedPassword, breachProofPassword.deblindedPassword);
   }
 
@@ -86,20 +70,20 @@ export class Pythia {
       version: latestProofKey.version,
       includeProof: true,
     });
-    const verified = this.pythiaCrypto.verify(
+    const verified = this.pythiaCrypto.verify({
       transformedPassword,
       blindedPassword,
-      salt,
-      latestProofKey.key,
+      tweak: salt,
+      transformationPublicKey: latestProofKey.key,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      proof!.valueC,
+      proofValueC: proof!.valueC,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      proof!.valueU,
-    );
+      proofValueU: proof!.valueU,
+    });
     if (!verified) {
       throw new Error('Transformed password proof verification has failed');
     }
-    const deblindedPassword = this.pythiaCrypto.deblind(transformedPassword, blindingSecret);
+    const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
     return new BreachProofPassword(salt, deblindedPassword, latestProofKey.version);
   }
 
@@ -108,10 +92,10 @@ export class Pythia {
     if (breachProofPassword.version !== prevVersion) {
       throw new Error('Unexpected breach-proof password version');
     }
-    const deblindedPassword = this.pythiaCrypto.updateDeblindedWithToken(
-      breachProofPassword.deblindedPassword,
-      token,
-    );
+    const deblindedPassword = this.pythiaCrypto.updateDeblindedWithToken({
+      deblindedPassword: breachProofPassword.deblindedPassword,
+      updateToken: token,
+    });
     return new BreachProofPassword(breachProofPassword.salt, deblindedPassword, nextVersion);
   }
 

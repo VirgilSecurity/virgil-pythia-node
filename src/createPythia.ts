@@ -1,8 +1,7 @@
-import { IPythiaCrypto } from './IPythiaCrypto';
 import { ProofKeys } from './ProofKeys';
 import { Pythia } from './Pythia';
 import { PythiaClient } from './PythiaClient';
-import { ICrypto, IAccessTokenProvider } from './types';
+import { ICrypto, IPythiaCrypto, IAccessTokenProvider } from './types';
 
 export const createPythia = (options: {
   virgilCrypto: ICrypto;
