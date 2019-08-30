@@ -15,7 +15,8 @@
     "lint": "eslint 'src/**/*.ts'",
     "test": "mocha -t 0 -r ts-node/register -r dotenv/config src/**/*.test.ts",
     "build": "rollup -c",
-    "clean": "rimraf .rpt2_cache dist"
+    "clean": "rimraf .rpt2_cache dist",
+    "prepare": "npm run clean && npm run build"
   },
   "dependencies": {
     "@virgilsecurity/crypto-types": "^0.1.3",
