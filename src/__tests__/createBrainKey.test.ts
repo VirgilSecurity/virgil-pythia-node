@@ -14,7 +14,7 @@ describe('createBrainKey', () => {
 
   it('returns an instance of `BrainKey`', () => {
     const virgilCrypto = new VirgilCrypto();
-    const virgilPythiaCrypto = new VirgilBrainKeyCrypto();
+    const virgilBrainKeyCrypto = new VirgilBrainKeyCrypto();
     const jwtGenerator = new JwtGenerator({
       apiKey: virgilCrypto.importPrivateKey({
         value: process.env.VIRGIL_API_KEY!,
@@ -27,7 +27,7 @@ describe('createBrainKey', () => {
     const accessTokenProvider = new GeneratorJwtProvider(jwtGenerator, undefined, uuid());
     const brainKey = createBrainKey({
       virgilCrypto,
-      virgilPythiaCrypto,
+      virgilBrainKeyCrypto,
       accessTokenProvider,
       apiUrl: process.env.VIRGIL_API_URL!,
     });

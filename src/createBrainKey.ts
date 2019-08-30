@@ -1,19 +1,23 @@
 import { BrainKey } from './BrainKey';
 import { PythiaClient } from './PythiaClient';
-import { ICrypto, IBrainKeyCrypto, IAccessTokenProvider } from './types';
+import { ICrypto, IBrainKeyCrypto, IPythiaCrypto, IAccessTokenProvider } from './types';
 
 export const createBrainKey = (options: {
   virgilCrypto: ICrypto;
-  virgilPythiaCrypto: IBrainKeyCrypto;
+  virgilBrainKeyCrypto: IBrainKeyCrypto;
   accessTokenProvider: IAccessTokenProvider;
+  virgilPythiaCrypto?: IPythiaCrypto;
   keyPairType?: unknown;
   apiUrl?: string;
 }) => {
   const pythiaClient = new PythiaClient(options.accessTokenProvider, options.apiUrl);
+  if (options.virgilPythiaCrypto && console) {
+    console.warn('Option `virgilPythiaCrypto` is deprecated. Use `virgilBrainKeyCrypto` instead.');
+  }
   return new BrainKey({
     pythiaClient,
     crypto: options.virgilCrypto,
-    brainKeyCrypto: options.virgilPythiaCrypto,
+    brainKeyCrypto: options.virgilBrainKeyCrypto || options.virgilPythiaCrypto,
     keyPairType: options.keyPairType,
   });
 };

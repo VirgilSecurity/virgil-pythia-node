@@ -253,11 +253,11 @@ In order to create a user's BrainKey, go through the following operations:
   Promise.all([VirgilCrypto.initCrypto(), VirgilPythiaCrypto.initPythia()])
     .then(() => {
       const virgilCrypto = new VirgilCrypto.VirgilCrypto();
-      const virgilPythiaCrypto = new VirgilPythiaCrypto.VirgilPythiaCrypto();
+      const virgilBrainKeyCrypto = new VirgilPythiaCrypto.VirgilBrainKeyCrypto();
       const accessTokenProvider = new Virgil.CachingJwtProvider(fetchJwt);
       const brainKey = VirgilPythia.createBrainKey({
         virgilCrypto,
-        virgilPythiaCrypto,
+        virgilBrainKeyCrypto,
         accessTokenProvider,
       });
 
