@@ -1,13 +1,19 @@
-import { NodeBuffer } from './types';
+import { NodeBuffer } from '@virgilsecurity/data-utils';
+
+import { NodeBuffer as BufferType } from './types';
 
 export class BreachProofPassword {
-  readonly salt: NodeBuffer;
-  readonly deblindedPassword: NodeBuffer;
+  readonly salt: BufferType;
+  readonly deblindedPassword: BufferType;
   readonly version: number;
 
-  constructor(salt: NodeBuffer, deblindedPassword: NodeBuffer, version: number) {
-    this.salt = salt;
-    this.deblindedPassword = deblindedPassword;
+  constructor(
+    salt: BufferType | string,
+    deblindedPassword: BufferType | string,
+    version: number,
+  ) {
+    this.salt = BreachProofPassword.toNodeBuffer(salt);
+    this.deblindedPassword = BreachProofPassword.toNodeBuffer(deblindedPassword);
     this.version = version;
   }
 
@@ -17,5 +23,15 @@ export class BreachProofPassword {
       deblindedPassword: this.deblindedPassword.toString('base64'),
       version: this.version,
     };
+  }
+
+  private static toNodeBuffer(value: BufferType | string) {
+    if (NodeBuffer.isBuffer(value)) {
+      return value;
+    }
+    if (typeof value === 'string') {
+      return NodeBuffer.from(value, 'base64');
+    }
+    throw new TypeError('`value` should be a Buffer or a string');
   }
 }
