@@ -7,11 +7,7 @@ export class BreachProofPassword {
   readonly deblindedPassword: BufferType;
   readonly version: number;
 
-  constructor(
-    salt: BufferType | string,
-    deblindedPassword: BufferType | string,
-    version: number,
-  ) {
+  constructor(salt: BufferType | string, deblindedPassword: BufferType | string, version: number) {
     this.salt = BreachProofPassword.toNodeBuffer(salt);
     this.deblindedPassword = BreachProofPassword.toNodeBuffer(deblindedPassword);
     this.version = version;
