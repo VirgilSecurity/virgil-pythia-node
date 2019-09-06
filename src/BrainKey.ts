@@ -21,7 +21,10 @@ export class BrainKey {
 
   async generateKeyPair(password: Data, brainKeyId?: string) {
     const { blindedPassword, blindingSecret } = this.brainKeyCrypto.blind(password);
-    const seed = await this.pythiaClient.generateSeed(blindedPassword.toString('base64'), brainKeyId);
+    const seed = await this.pythiaClient.generateSeed(
+      blindedPassword.toString('base64'),
+      brainKeyId,
+    );
     const deblindedPassword = this.brainKeyCrypto.deblind({
       blindingSecret,
       transformedPassword: seed,

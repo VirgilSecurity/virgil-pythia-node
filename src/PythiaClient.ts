@@ -88,6 +88,7 @@ export class PythiaClient implements IPythiaClient {
       },
     });
     const result: TransformPasswordResult = {
+      // eslint-disable-next-line @typescript-eslint/camelcase
       transformedPassword: transformed_password,
     };
     if (body.include_proof) {

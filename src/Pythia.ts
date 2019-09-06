@@ -54,7 +54,10 @@ export class Pythia {
       }
     }
     const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
-    return constantTimeEqual(deblindedPassword.toString('base64'), breachProofPassword.deblindedPassword);
+    return constantTimeEqual(
+      deblindedPassword.toString('base64'),
+      breachProofPassword.deblindedPassword,
+    );
   }
 
   async createBreachProofPassword(password: Data) {
