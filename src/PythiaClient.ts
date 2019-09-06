@@ -1,4 +1,3 @@
-import { NodeBuffer } from '@virgilsecurity/data-utils';
 import axios from 'axios';
 
 import { PythiaClientError } from './errors';
@@ -34,10 +33,10 @@ export class PythiaClient implements IPythiaClient {
     this.axios.interceptors.response.use(undefined, PythiaClient.onBadResponse);
   }
 
-  async generateSeed(blindedPassword: Buffer, brainKeyId?: string) {
+  async generateSeed(blindedPassword: string, brainKeyId?: string) {
     const body: GenerateSeedRequestBody = {
       // eslint-disable-next-line @typescript-eslint/camelcase
-      blinded_password: blindedPassword.toString('base64'),
+      blinded_password: blindedPassword,
     };
     if (brainKeyId) {
       // eslint-disable-next-line @typescript-eslint/camelcase
@@ -54,20 +53,20 @@ export class PythiaClient implements IPythiaClient {
         Authorization: `Virgil ${accessToken.toString()}`,
       },
     });
-    return NodeBuffer.from(seed, 'base64');
+    return seed;
   }
 
   async transformPassword(options: {
-    blindedPassword: Buffer;
-    salt: Buffer;
+    blindedPassword: string;
+    salt: string;
     version?: number;
     includeProof?: boolean;
   }) {
     const body: TransformPasswordRequestBody = {
       // eslint-disable-next-line @typescript-eslint/camelcase
-      blinded_password: options.blindedPassword.toString('base64'),
+      blinded_password: options.blindedPassword,
       // eslint-disable-next-line @typescript-eslint/camelcase
-      user_id: options.salt.toString('base64'),
+      user_id: options.salt,
     };
     if (typeof options.version === 'number' && !Number.isNaN(options.version)) {
       body.version = options.version;
@@ -89,19 +88,23 @@ export class PythiaClient implements IPythiaClient {
       },
     });
     const result: TransformPasswordResult = {
-      transformedPassword: NodeBuffer.from(transformed_password, 'base64'),
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      transformedPassword: transformed_password,
     };
     if (body.include_proof) {
       result.proof = {
-        valueC: NodeBuffer.from(proof.value_c, 'base64'),
-        valueU: NodeBuffer.from(proof.value_u, 'base64'),
+        valueC: proof.value_c,
+        valueU: proof.value_u,
       };
     }
     return result;
   }
 
   private static onBadResponse(response: AxiosResponse) {
-    const message = response.data.message || response.statusText;
-    throw new PythiaClientError(message, response.data.code, response.status);
+    if (response.data) {
+      const message = response.data.message || response.statusText;
+      throw new PythiaClientError(message, response.data.code, response.status);
+    }
+    throw new PythiaClientError(response.statusText, undefined, response.status);
   }
 }

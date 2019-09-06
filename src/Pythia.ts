@@ -1,5 +1,3 @@
-import { NodeBuffer, dataToUint8Array } from '@virgilsecurity/data-utils';
-
 import { BreachProofPassword } from './BreachProofPassword';
 import { ProofVerificationFailedError, UnexpectedBreachProofPasswordVersionError } from './errors';
 import { IPythiaClient } from './IPythiaClient';
@@ -32,12 +30,11 @@ export class Pythia {
     breachProofPassword: BreachProofPassword,
     includeProof?: boolean,
   ) {
-    const myPassword = dataToUint8Array(password, 'utf8');
-    const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(myPassword);
+    const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
     const proofKey = this.proofKeys.proofKey(breachProofPassword.version);
     const { transformedPassword, proof } = await this.pythiaClient.transformPassword({
-      blindedPassword,
       includeProof,
+      blindedPassword: blindedPassword.toString('base64'),
       salt: breachProofPassword.salt,
       version: breachProofPassword.version,
     });
@@ -57,17 +54,19 @@ export class Pythia {
       }
     }
     const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
-    return constantTimeEqual(deblindedPassword, breachProofPassword.deblindedPassword);
+    return constantTimeEqual(
+      deblindedPassword.toString('base64'),
+      breachProofPassword.deblindedPassword,
+    );
   }
 
   async createBreachProofPassword(password: Data) {
     const salt = this.crypto.getRandomBytes(Pythia.SALT_BYTE_LENGTH);
-    const myPassword = dataToUint8Array(password, 'utf8');
-    const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(myPassword);
+    const { blindedPassword, blindingSecret } = this.pythiaCrypto.blind(password);
     const latestProofKey = this.proofKeys.currentKey();
     const { transformedPassword, proof } = await this.pythiaClient.transformPassword({
-      blindedPassword,
-      salt,
+      blindedPassword: blindedPassword.toString('base64'),
+      salt: salt.toString('base64'),
       version: latestProofKey.version,
       includeProof: true,
     });
@@ -108,7 +107,7 @@ export class Pythia {
     return {
       prevVersion: Number(parts[1]),
       nextVersion: Number(parts[2]),
-      token: NodeBuffer.from(parts[3], 'base64'),
+      token: parts[3],
     };
   }
 }

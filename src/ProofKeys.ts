@@ -1,10 +1,8 @@
-import { NodeBuffer } from '@virgilsecurity/data-utils';
-
 import { toArray } from './utils';
 
 interface ProofKey {
   version: number;
-  key: Uint8Array;
+  key: string;
 }
 
 export class ProofKeys {
@@ -39,7 +37,7 @@ export class ProofKeys {
       throw new TypeError('`proofKey` format is invalid');
     }
     const version = Number(parts[1]);
-    const key = NodeBuffer.from(parts[2], 'base64');
+    const key = parts[2];
     return { version, key };
   }
 

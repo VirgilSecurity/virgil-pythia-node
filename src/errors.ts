@@ -7,10 +7,10 @@ export class PythiaError extends Error {
 }
 
 export class PythiaClientError extends PythiaError {
-  readonly code: number;
-  readonly httpStatus: number;
+  readonly code?: number;
+  readonly httpStatus?: number;
 
-  constructor(message: string, code: number, httpStatus: number) {
+  constructor(message: string, code?: number, httpStatus?: number) {
     super(message);
     this.code = code;
     this.httpStatus = httpStatus;

@@ -51,23 +51,24 @@ describe('Pythia', () => {
 
     it('creates new breach-proof password', async () => {
       const breachProofPassword = await pythia.createBreachProofPassword('password');
-      expect(breachProofPassword.salt.byteLength).to.eql(Pythia.SALT_BYTE_LENGTH);
-      expect(breachProofPassword.deblindedPassword.byteLength).to.be.greaterThan(300);
-      expect(breachProofPassword.version).to.eql(1);
+      expect(NodeBuffer.from(breachProofPassword.salt, 'base64').byteLength).to.equal(
+        Pythia.SALT_BYTE_LENGTH,
+      );
+      expect(NodeBuffer.from(breachProofPassword.deblindedPassword).byteLength).to.be.greaterThan(
+        300,
+      );
+      expect(breachProofPassword.version).to.equal(1);
     });
 
     it('creates different passwords from the same input (YTC-13)', async () => {
       const password = 'password';
       const breachProofPassword1 = await pythia.createBreachProofPassword(password);
       const breachProofPassword2 = await pythia.createBreachProofPassword(password);
-      expect(NodeBuffer.from(breachProofPassword1.salt).equals(breachProofPassword2.salt)).to.be
-        .false;
-      expect(
-        NodeBuffer.from(breachProofPassword1.deblindedPassword).equals(
-          breachProofPassword2.deblindedPassword,
-        ),
-      ).to.be.false;
-      expect(breachProofPassword1.version).to.eql(breachProofPassword2.version);
+      expect(breachProofPassword1.salt).not.to.be.equal(breachProofPassword2.salt);
+      expect(breachProofPassword1.deblindedPassword).not.to.be.equal(
+        breachProofPassword2.deblindedPassword,
+      );
+      expect(breachProofPassword1.version).to.equal(breachProofPassword2.version);
     });
   });
 
@@ -138,14 +139,11 @@ describe('Pythia', () => {
         process.env.MY_UPDATE_TOKEN!,
         breachProofPassword,
       );
-      expect(NodeBuffer.from(updatedBreachProofPassword.salt).equals(breachProofPassword.salt)).to
-        .be.true;
-      expect(
-        NodeBuffer.from(updatedBreachProofPassword.deblindedPassword).equals(
-          breachProofPassword.deblindedPassword,
-        ),
-      ).to.be.false;
-      expect(updatedBreachProofPassword.version).to.eql(2);
+      expect(updatedBreachProofPassword.salt).to.equal(breachProofPassword.salt);
+      expect(updatedBreachProofPassword.deblindedPassword).not.to.be.equal(
+        breachProofPassword.deblindedPassword,
+      );
+      expect(updatedBreachProofPassword.version).to.equal(2);
     });
 
     it('throws error when bpp is already migrated (YTC-18)', async () => {
