@@ -1,6 +1,7 @@
 import { NodeBuffer, dataToUint8Array } from '@virgilsecurity/data-utils';
 
 import { BreachProofPassword } from './BreachProofPassword';
+import { ProofVerificationFailedError, UnexpectedBreachProofPasswordVersionError } from './errors';
 import { IPythiaClient } from './IPythiaClient';
 import { ProofKeys } from './ProofKeys';
 import { Data, ICrypto, IPythiaCrypto } from './types';
@@ -52,7 +53,7 @@ export class Pythia {
         proofValueU: proof!.valueU,
       });
       if (!verified) {
-        throw new Error('Transformed password proof verification has failed');
+        throw new ProofVerificationFailedError();
       }
     }
     const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
@@ -81,7 +82,7 @@ export class Pythia {
       proofValueU: proof!.valueU,
     });
     if (!verified) {
-      throw new Error('Transformed password proof verification has failed');
+      throw new ProofVerificationFailedError();
     }
     const deblindedPassword = this.pythiaCrypto.deblind({ transformedPassword, blindingSecret });
     return new BreachProofPassword(salt, deblindedPassword, latestProofKey.version);
@@ -90,7 +91,7 @@ export class Pythia {
   updateBreachProofPassword(updateToken: string, breachProofPassword: BreachProofPassword) {
     const { prevVersion, nextVersion, token } = this.parseUpdateToken(updateToken);
     if (breachProofPassword.version !== prevVersion) {
-      throw new Error('Unexpected breach-proof password version');
+      throw new UnexpectedBreachProofPasswordVersionError(prevVersion, breachProofPassword.version);
     }
     const deblindedPassword = this.pythiaCrypto.updateDeblindedWithToken({
       deblindedPassword: breachProofPassword.deblindedPassword,

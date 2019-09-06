@@ -1,8 +1,9 @@
 import { NodeBuffer } from '@virgilsecurity/data-utils';
 import axios from 'axios';
 
+import { PythiaClientError } from './errors';
 import { IPythiaClient, TransformPasswordResult } from './IPythiaClient';
-import { IAccessTokenProvider } from './types';
+import { AxiosResponse, IAccessTokenProvider } from './types';
 
 type AxiosInstance = import('axios').AxiosInstance;
 
@@ -30,6 +31,7 @@ export class PythiaClient implements IPythiaClient {
     }
     this.accessTokenProvider = accessTokenProvider;
     this.axios = axios.create({ baseURL: apiUrl || PythiaClient.DEFAULT_URL });
+    this.axios.interceptors.response.use(undefined, PythiaClient.onBadResponse);
   }
 
   async generateSeed(blindedPassword: Buffer, brainKeyId?: string) {
@@ -96,5 +98,10 @@ export class PythiaClient implements IPythiaClient {
       };
     }
     return result;
+  }
+
+  private static onBadResponse(response: AxiosResponse) {
+    const message = response.data.message || response.statusText;
+    throw new PythiaClientError(message, response.data.code, response.status);
   }
 }

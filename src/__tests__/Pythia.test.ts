@@ -6,7 +6,12 @@ import { initPythia, VirgilPythiaCrypto } from '@virgilsecurity/pythia-crypto';
 import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { JwtGenerator, GeneratorJwtProvider } from 'virgil-sdk';
 
-import { BreachProofPassword, Pythia, PythiaClient } from '../index';
+import {
+  BreachProofPassword,
+  Pythia,
+  PythiaClient,
+  UnexpectedBreachProofPasswordVersionError,
+} from '../index';
 import { ProofKeys } from '../ProofKeys';
 import { RATE_LIMIT, sleep } from './utils';
 
@@ -148,7 +153,7 @@ describe('Pythia', () => {
       const error = () => {
         updatedPythia.updateBreachProofPassword(process.env.MY_UPDATE_TOKEN!, breachProofPassword);
       };
-      expect(error).to.throw;
+      expect(error).to.throw(UnexpectedBreachProofPasswordVersionError);
     });
 
     it('throws error when bpp is has wrong version (YTC-19)', async () => {
@@ -159,7 +164,7 @@ describe('Pythia', () => {
           breachProofPassword,
         );
       };
-      expect(error).to.throw;
+      expect(error).to.throw(UnexpectedBreachProofPasswordVersionError);
     });
 
     it('throws error when given invalid update token (YTC-20)', () => {
@@ -169,7 +174,7 @@ describe('Pythia', () => {
           breachProofPassword,
         );
       };
-      expect(error).to.throw;
+      expect(error).to.throw(TypeError);
     });
   });
 
