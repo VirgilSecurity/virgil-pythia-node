@@ -100,7 +100,10 @@ export class PythiaClient implements IPythiaClient {
   }
 
   private static onBadResponse(response: AxiosResponse) {
-    const message = response.data.message || response.statusText;
-    throw new PythiaClientError(message, response.data.code, response.status);
+    if (response.data) {
+      const message = response.data.message || response.statusText;
+      throw new PythiaClientError(message, response.data.code, response.status);
+    }
+    throw new PythiaClientError(response.statusText, undefined, response.status);
   }
 }
