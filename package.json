@@ -1,6 +1,6 @@
 {
   "name": "virgil-pythia",
-  "version": "0.3.0-alpha.3",
+  "version": "0.3.0-alpha.4",
   "description": "Virgil Pythia SDK allows developers to implement Pythia protocol to create breach-proof passwords, immune to offline and online attacks.",
   "main": "./dist/pythia.cjs.js",
   "module": "./dist/pythia.es.js",
