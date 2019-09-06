@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import { PythiaClientError } from './errors';
+import { PythiaError, PythiaClientError } from './errors';
 import { IPythiaClient, TransformPasswordResult } from './IPythiaClient';
-import { AxiosResponse, IAccessTokenProvider } from './types';
+import { AxiosError, IAccessTokenProvider } from './types';
 
 type AxiosInstance = import('axios').AxiosInstance;
 
@@ -100,11 +100,14 @@ export class PythiaClient implements IPythiaClient {
     return result;
   }
 
-  private static onBadResponse(response: AxiosResponse) {
-    if (response.data) {
-      const message = response.data.message || response.statusText;
-      throw new PythiaClientError(message, response.data.code, response.status);
+  private static onBadResponse(error: AxiosError) {
+    if (error.response) {
+      if (error.response.data) {
+        const message = error.response.data.message || error.response.statusText;
+        throw new PythiaClientError(message, error.response.data.code, error.response.status);
+      }
+      throw new PythiaClientError(error.response.statusText, undefined, error.response.status);
     }
-    throw new PythiaClientError(response.statusText, undefined, response.status);
+    throw new PythiaError('Something bad happened. Please try again later.');
   }
 }

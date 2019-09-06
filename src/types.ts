@@ -1,4 +1,4 @@
-export type AxiosResponse = import('axios').AxiosResponse;
+export type AxiosError = import('axios').AxiosError;
 
 export type NodeBuffer = import('@virgilsecurity/crypto-types').NodeBuffer;
 export type Data = import('@virgilsecurity/crypto-types').Data;
