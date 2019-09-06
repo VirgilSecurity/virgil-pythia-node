@@ -1,15 +1,16 @@
-export const constantTimeEqual = (array1: Uint8Array, array2: Uint8Array) => {
-  if (!(array1 instanceof Uint8Array && array2 instanceof Uint8Array)) {
-    throw new Error('Only Uint8Array instances can be checked for equality');
+export const constantTimeEqual = (a: string, b: string) => {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+
+  var mismatch = a.length === b.length ? 0 : 1;
+  if (mismatch) {
+    b = a;
   }
-  if (array1.byteLength !== array2.byteLength) {
-    throw new Error('Both arrays must be of the same length');
+
+  for (var i = 0, il = a.length; i < il; ++i) {
+    mismatch |= (a.charCodeAt(i) ^ b.charCodeAt(i));
   }
-  let equal = 0;
-  for (let i = 0; i < array1.length; i += 1) {
-    equal |= array1[i] ^ array2[i];
-  }
-  return equal === 0;
+
+  return mismatch === 0;
 };
 
 export const toArray = <T>(val?: T | T[]): T[] => {

@@ -31,6 +31,7 @@
     "@types/uuid": "^3.4.5",
     "@typescript-eslint/eslint-plugin": "^1.11.0",
     "@typescript-eslint/parser": "^1.11.0",
+    "@virgilsecurity/data-utils": "^0.1.5",
     "@virgilsecurity/pythia-crypto": "^0.1.0",
     "chai": "^4.2.0",
     "dotenv": "^8.1.0",
