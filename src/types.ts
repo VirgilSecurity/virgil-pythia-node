@@ -1,3 +1,5 @@
+export type AxiosResponse = import('axios').AxiosResponse;
+
 export type NodeBuffer = import('@virgilsecurity/crypto-types').NodeBuffer;
 export type Data = import('@virgilsecurity/crypto-types').Data;
 export type ICrypto = import('@virgilsecurity/crypto-types').ICrypto;
