@@ -35,12 +35,12 @@ password.
 
 Install Pythia SDK with the following code:
 ```bash
-npm install virgil-pythia@next
+npm install virgil-pythia
 ```
 
 You will also need to install the `virgil-crypto`, `@virgilsecurity/pythia-crypto` and `virgil-sdk` packages separately:
 ```bash
-npm install virgil-crypto@next @virgilsecurity/pythia-crypto virgil-sdk
+npm install virgil-crypto@next @virgilsecurity/pythia-crypto virgil-sdk@next
 ```
 
 ### Configure SDK
@@ -238,8 +238,8 @@ In order to create a user's BrainKey, go through the following operations:
   <title>Title</title>
   <script type="text/javascript" src="https://unpkg.com/@virgilsecurity/pythia-crypto/dist/browser.umd.js"></script>
   <script type="text/javascript" src="https://unpkg.com/virgil-crypto@next/dist/browser.umd.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/virgil-pythia@next/dist/browser.umd.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/virgil-sdk/dist/virgil-sdk.browser.umd.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/virgil-pythia/dist/browser.umd.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/virgil-sdk@next/dist/virgil-sdk.browser.umd.js"></script>
 </head>
 <body>
 <script>
