@@ -4,6 +4,10 @@ node_js:
   - "10"
   - "11"
   - "12"
+before_install:
+  - yarn cache clean
+install:
+  - yarn install --no-lockfile
 script:
   - yarn lint
   - yarn test
