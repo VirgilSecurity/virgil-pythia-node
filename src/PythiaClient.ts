@@ -1,8 +1,10 @@
 import axios from 'axios';
+import { VirgilAgent } from 'virgil-sdk';
 
+import { version } from '../package.json';
 import { PythiaError, PythiaClientError } from './errors';
 import { IPythiaClient, TransformPasswordResult } from './IPythiaClient';
-import { AxiosError, IAccessTokenProvider } from './types';
+import { AxiosError, IAccessTokenProvider, IAccessToken } from './types';
 
 type AxiosInstance = import('axios').AxiosInstance;
 
@@ -20,16 +22,23 @@ interface TransformPasswordRequestBody {
 
 export class PythiaClient implements IPythiaClient {
   private static readonly DEFAULT_URL = 'https://api.virgilsecurity.com';
+  private static readonly PRODUCT_NAME = 'pythia';
 
   private readonly accessTokenProvider: IAccessTokenProvider;
   private readonly axios: AxiosInstance;
+  private readonly virgilAgent: VirgilAgent;
 
-  constructor(accessTokenProvider: IAccessTokenProvider, apiUrl?: string) {
+  constructor(
+    accessTokenProvider: IAccessTokenProvider,
+    apiUrl?: string,
+    virgilAgent?: VirgilAgent,
+  ) {
     if (accessTokenProvider == null) {
       throw new Error('`accessTokenProvider` is required');
     }
     this.accessTokenProvider = accessTokenProvider;
     this.axios = axios.create({ baseURL: apiUrl || PythiaClient.DEFAULT_URL });
+    this.virgilAgent = virgilAgent || new VirgilAgent(PythiaClient.PRODUCT_NAME, version);
     this.axios.interceptors.response.use(undefined, PythiaClient.onBadResponse);
   }
 
@@ -49,9 +58,7 @@ export class PythiaClient implements IPythiaClient {
     const {
       data: { seed },
     } = await this.axios.post('/pythia/v1/brainkey', body, {
-      headers: {
-        Authorization: `Virgil ${accessToken.toString()}`,
-      },
+      headers: PythiaClient.getHeaders(this.virgilAgent, accessToken),
     });
     return seed;
   }
@@ -83,9 +90,7 @@ export class PythiaClient implements IPythiaClient {
       // eslint-disable-next-line @typescript-eslint/camelcase
       data: { transformed_password, proof },
     } = await this.axios.post('/pythia/v1/password', body, {
-      headers: {
-        Authorization: `Virgil ${accessToken.toString()}`,
-      },
+      headers: PythiaClient.getHeaders(this.virgilAgent, accessToken),
     });
     const result: TransformPasswordResult = {
       // eslint-disable-next-line @typescript-eslint/camelcase
@@ -98,6 +103,13 @@ export class PythiaClient implements IPythiaClient {
       };
     }
     return result;
+  }
+
+  private static getHeaders(virgilAgent: VirgilAgent, accessToken: IAccessToken) {
+    return {
+      Authorization: `Virgil ${accessToken.toString()}`,
+      'Virgil-Agent': virgilAgent.value,
+    };
   }
 
   private static onBadResponse(error: AxiosError) {
