@@ -38,7 +38,8 @@ Install Pythia SDK with the following code:
 npm install virgil-pythia
 ```
 
-You will also need to install the `virgil-crypto`, `@virgilsecurity/pythia-crypto` and `virgil-sdk` packages separately:
+You will also need to install the `virgil-crypto`, `@virgilsecurity/pythia-crypto` and `virgil-sdk` packages.
+> Please note that minimum supported version of `virgil-crypto` is `4.0.0-alpha.13` and minimum supported version of `virgil-sdk` is `6.0.0-alpha.3`.
 ```bash
 npm install virgil-crypto@next @virgilsecurity/pythia-crypto virgil-sdk@next
 ```
