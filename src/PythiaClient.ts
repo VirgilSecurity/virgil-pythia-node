@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { VirgilAgent } from 'virgil-sdk';
 
-import { version } from '../package.json';
 import { PythiaError, PythiaClientError } from './errors';
 import { IPythiaClient, TransformPasswordResult } from './IPythiaClient';
 import { AxiosError, IAccessTokenProvider, IAccessToken } from './types';
@@ -22,7 +21,6 @@ interface TransformPasswordRequestBody {
 
 export class PythiaClient implements IPythiaClient {
   private static readonly DEFAULT_URL = 'https://api.virgilsecurity.com';
-  private static readonly PRODUCT_NAME = 'pythia';
 
   private readonly accessTokenProvider: IAccessTokenProvider;
   private readonly axios: AxiosInstance;
@@ -38,7 +36,9 @@ export class PythiaClient implements IPythiaClient {
     }
     this.accessTokenProvider = accessTokenProvider;
     this.axios = axios.create({ baseURL: apiUrl || PythiaClient.DEFAULT_URL });
-    this.virgilAgent = virgilAgent || new VirgilAgent(PythiaClient.PRODUCT_NAME, version);
+    this.virgilAgent =
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      virgilAgent || new VirgilAgent(process.env.PRODUCT_NAME!, process.env.PRODUCT_VERSION!);
     this.axios.interceptors.response.use(undefined, PythiaClient.onBadResponse);
   }
 

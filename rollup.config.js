@@ -1,8 +1,8 @@
 const path = require('path');
 
 const commonjs = require('rollup-plugin-commonjs');
-const json = require('rollup-plugin-json');
 const nodeResolve = require('rollup-plugin-node-resolve');
+const replace = require('rollup-plugin-replace');
 const { terser } = require('rollup-plugin-terser');
 const typescript = require('rollup-plugin-typescript2');
 
@@ -10,6 +10,8 @@ const packageJson = require('./package.json');
 
 const dependencies = Object.keys(packageJson.dependencies);
 const peerDependencies = Object.keys(packageJson.peerDependencies);
+
+const PRODUCT_NAME = 'pythia';
 
 const FORMAT = {
   CJS: 'cjs',
@@ -32,7 +34,10 @@ const createEntry = format => ({
     },
   },
   plugins: [
-    json({ compact: true }),
+    replace({
+      'process.env.PRODUCT_NAME': JSON.stringify(PRODUCT_NAME),
+      'process.env.PRODUCT_VERSION': JSON.stringify(packageJson.version),
+    }),
     format === FORMAT.UMD && nodeResolve({ browser: true }),
     format === FORMAT.UMD && commonjs(),
     typescript({
