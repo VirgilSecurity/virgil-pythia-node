@@ -23,7 +23,7 @@
     "axios": "^0.19.0"
   },
   "peerDependencies": {
-    "virgil-sdk": "next"
+    "virgil-sdk": "6.0.0-alpha.4"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
@@ -50,7 +50,7 @@
     "ts-node": "^8.3.0",
     "typescript": "^3.5.1",
     "uuid": "^3.3.2",
-    "virgil-crypto": "next",
-    "virgil-sdk": "next"
+    "virgil-crypto": "4.0.0-alpha.13",
+    "virgil-sdk": "6.0.0-alpha.4"
   }
 }
