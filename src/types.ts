@@ -7,3 +7,4 @@ export type IBrainKeyCrypto = import('@virgilsecurity/crypto-types').IBrainKeyCr
 export type IPythiaCrypto = import('@virgilsecurity/crypto-types').IPythiaCrypto;
 
 export type IAccessTokenProvider = import('virgil-sdk').IAccessTokenProvider;
+export type IAccessToken = import('virgil-sdk').IAccessToken;

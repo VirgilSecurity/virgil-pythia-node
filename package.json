@@ -1,6 +1,6 @@
 {
   "name": "virgil-pythia",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Virgil Pythia SDK allows developers to implement Pythia protocol to create breach-proof passwords, immune to offline and online attacks.",
   "main": "./dist/pythia.cjs.js",
   "module": "./dist/pythia.es.js",
@@ -23,7 +23,7 @@
     "axios": "^0.19.0"
   },
   "peerDependencies": {
-    "virgil-sdk": "next"
+    "virgil-sdk": "6.0.0-alpha.4"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
@@ -43,13 +43,14 @@
     "rimraf": "^2.6.3",
     "rollup": "^1.14.6",
     "rollup-plugin-commonjs": "^10.0.2",
+    "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.1.1",
     "rollup-plugin-typescript2": "^0.21.1",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.1",
     "uuid": "^3.3.2",
-    "virgil-crypto": "next",
-    "virgil-sdk": "next"
+    "virgil-crypto": "4.0.0-alpha.13",
+    "virgil-sdk": "6.0.0-alpha.4"
   }
 }

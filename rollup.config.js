@@ -1,6 +1,7 @@
 const path = require('path');
 
 const commonjs = require('rollup-plugin-commonjs');
+const json = require('rollup-plugin-json');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const { terser } = require('rollup-plugin-terser');
 const typescript = require('rollup-plugin-typescript2');
@@ -26,8 +27,12 @@ const createEntry = format => ({
     format,
     file: path.join(outputPath, `pythia.${format}.js`),
     name: 'VirgilPythia',
+    globals: {
+      'virgil-sdk': 'Virgil',
+    },
   },
   plugins: [
+    json({ compact: true }),
     format === FORMAT.UMD && nodeResolve({ browser: true }),
     format === FORMAT.UMD && commonjs(),
     typescript({
