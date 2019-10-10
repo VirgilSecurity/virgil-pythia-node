@@ -1,6 +1,6 @@
 {
   "name": "virgil-pythia",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Virgil Pythia SDK allows developers to implement Pythia protocol to create breach-proof passwords, immune to offline and online attacks.",
   "main": "./dist/pythia.cjs.js",
   "module": "./dist/pythia.es.js",
@@ -13,7 +13,7 @@
   "license": "BSD-3-Clause",
   "scripts": {
     "lint": "eslint 'src/**/*.ts'",
-    "test": "mocha -t 0 -r ts-node/register -r dotenv/config src/**/*.test.ts",
+    "test": "mocha -t 0 -r ts-node/register -r dotenv/config -r setup-mocha src/**/*.test.ts",
     "build": "rollup -c",
     "clean": "rimraf .rpt2_cache dist",
     "prepare": "npm run clean && npm run build"
@@ -43,8 +43,8 @@
     "rimraf": "^2.6.3",
     "rollup": "^1.14.6",
     "rollup-plugin-commonjs": "^10.0.2",
-    "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-replace": "^2.2.0",
     "rollup-plugin-terser": "^5.1.1",
     "rollup-plugin-typescript2": "^0.21.1",
     "ts-node": "^8.3.0",
