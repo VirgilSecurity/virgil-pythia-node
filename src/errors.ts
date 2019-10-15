@@ -1,4 +1,5 @@
 export class PythiaError extends Error {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(message: string, name: string = 'PythiaError', ParentClass: any = PythiaError) {
     super(message);
     Object.setPrototypeOf(this, ParentClass.prototype);
