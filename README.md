@@ -40,7 +40,7 @@ npm install virgil-pythia
 
 You will also need to install the `virgil-crypto`, `@virgilsecurity/pythia-crypto` and `virgil-sdk` packages.
 ```bash
-npm install virgil-crypto@4.0.0-alpha.13 @virgilsecurity/pythia-crypto virgil-sdk@6.0.0-alpha.4
+npm install virgil-crypto@4.0.0-alpha.13 @virgilsecurity/pythia-crypto virgil-sdk@^6.0.0-alpha.5
 ```
 
 ### Configure SDK
@@ -239,7 +239,7 @@ In order to create a user's BrainKey, go through the following operations:
   <script type="text/javascript" src="https://unpkg.com/@virgilsecurity/pythia-crypto/dist/browser.umd.js"></script>
   <script type="text/javascript" src="https://unpkg.com/virgil-crypto@4.0.0-alpha.13/dist/browser.umd.js"></script>
   <script type="text/javascript" src="https://unpkg.com/virgil-pythia/dist/browser.umd.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/virgil-sdk@6.0.0-alpha.4/dist/virgil-sdk.browser.umd.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/virgil-sdk@^6.0.0-alpha.5/dist/virgil-sdk.browser.umd.js"></script>
 </head>
 <body>
 <script>
