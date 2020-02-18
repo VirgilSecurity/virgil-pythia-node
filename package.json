@@ -50,7 +50,7 @@
     "ts-node": "^8.3.0",
     "typescript": "^3.5.1",
     "uuid": "^3.3.2",
-    "virgil-crypto": "4.0.0",
+    "virgil-crypto": "^4.0.0",
     "virgil-sdk": "^6.0.0"
   }
 }

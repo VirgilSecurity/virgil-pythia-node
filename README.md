@@ -236,10 +236,10 @@ In order to create a user's BrainKey, go through the following operations:
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
-  <script type="text/javascript" src="https://unpkg.com/@virgilsecurity/pythia-crypto/dist/browser.umd.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/virgil-crypto/dist/browser.umd.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/virgil-pythia/dist/browser.umd.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/virgil-sdk/dist/virgil-sdk.browser.umd.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/@virgilsecurity/pythia-crypto@^1.0.0/dist/browser.umd.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/virgil-crypto@^4.0.0/dist/browser.umd.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/virgil-pythia@^1.0.0/dist/browser.umd.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/virgil-sdk@^6.0.0/dist/virgil-sdk.browser.umd.js"></script>
 </head>
 <body>
 <script>
