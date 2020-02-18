@@ -1,4 +1,4 @@
-> This README is for virgil-pythia v0.3.x. Check the [v0.2.7](https://github.com/VirgilSecurity/virgil-pythia-node/tree/v0.2.7) branch for virgil-pythia docs.
+> This README is for virgil-pythia v1.0.x. Check the [v0.2.7](https://github.com/VirgilSecurity/virgil-pythia-node/tree/v0.2.7) branch for virgil-pythia docs.
 
 # Virgil Pythia Node.js SDK
 [![npm](https://img.shields.io/npm/v/virgil-pythia.svg)](https://www.npmjs.com/package/virgil-pythia)
@@ -40,7 +40,7 @@ npm install virgil-pythia
 
 You will also need to install the `virgil-crypto`, `@virgilsecurity/pythia-crypto` and `virgil-sdk` packages.
 ```bash
-npm install virgil-crypto@4.0.0-alpha.13 @virgilsecurity/pythia-crypto virgil-sdk@^6.0.0-alpha.5
+npm install virgil-crypto @virgilsecurity/pythia-crypto virgil-sdk
 ```
 
 ### Configure SDK
@@ -237,9 +237,9 @@ In order to create a user's BrainKey, go through the following operations:
   <meta charset="UTF-8">
   <title>Title</title>
   <script type="text/javascript" src="https://unpkg.com/@virgilsecurity/pythia-crypto/dist/browser.umd.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/virgil-crypto@4.0.0-alpha.13/dist/browser.umd.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/virgil-crypto/dist/browser.umd.js"></script>
   <script type="text/javascript" src="https://unpkg.com/virgil-pythia/dist/browser.umd.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/virgil-sdk@^6.0.0-alpha.5/dist/virgil-sdk.browser.umd.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/virgil-sdk/dist/virgil-sdk.browser.umd.js"></script>
 </head>
 <body>
 <script>
